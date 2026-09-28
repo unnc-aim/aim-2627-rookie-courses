@@ -1,0 +1,191 @@
+# RoboMaster 战队新成员培训课程（2026-2027 学年）
+
+> 本仓库是 UNNC AIM 战队 **2627 学年**的新生培训课程仓库。跨学年的仓库总览与整体使用指南请移步 [aim-rookie-courses](https://github.com/unnc-aim/aim-rookie-courses)。
+
+## 课程概述
+
+本培训体系专为 RoboMaster 战队新成员设计，涵盖**计算**和**机械**两大专业方向。计算方向下设**控制、导航、算法**三个平行组，无论你选择哪个方向，都将获得扎实的理论基础和丰富的实践经验。
+
+## 2627 学年新变化
+
+相比上一学年（[aim-2526-rookie-courses](https://github.com/unnc-aim/aim-2526-rookie-courses)，已归档），本学年仓库布局做了如下调整：
+
+1. **仓库按学年拆分**：无年份的 `aim-rookie-courses` 只保留仓库总览与整体使用指南；各学年课程放入独立的 `aim-<学年>-rookie-courses` 仓库，学年结束后归档。
+2. **路线与内容合并**：取消 `Contents/`（课程内容）与 `Routes/`（学习路线）分离架构，学习路线与课程内容统一放在各方向 / 组的目录下，组目录的 `README.md` 即该组入口。
+3. **三个平行组**：控制、导航、算法三个组彼此平行，同属 `Computing/` 目录：
+   - **电控组更名为控制组**（Electronic → Control），学习路线与培养目标不变；
+   - **导航从算法组独立**，成为与算法平行的组；
+   - **算法组聚焦视觉方向**（自瞄 / 雷达），原 Vision 学习路线并入算法组。
+4. **课程全局编号**：公共基础课 `01`-`04` 为计算方向全组必修，其后课程按开课顺序全局连续编号（如算法组首门课程 `05-OpenCV`）。
+
+课程内容本身未做修改，仅调整目录布局并更新文档中的引用路径。
+
+### 目录结构
+
+```bash
+aim-2627-rookie-courses/
+├── Computing/                  # 计算方向（控制 / 导航 / 算法三组共同入口）
+│   ├── 01-Python/              # 公共基础：Python 编程基础（3 节课）
+│   ├── 02-Linux/               # 公共基础：Linux 系统基础（2 个 Section）
+│   ├── 03-Cpp/                 # 公共基础：Cpp 编程基础
+│   ├── 04-ROS2/                # 公共基础：机器人操作系统 ROS2
+│   ├── Control/                # 控制组（原电控组）
+│   ├── Navigation/             # 导航组（2627 起独立成组）
+│   └── Algorithm/              # 算法组（视觉方向）
+│       ├── 05-OpenCV/          # 算法组首门课程：计算机视觉
+│       ├── Aiming/             # 自瞄系统学习路线
+│       └── Radar/              # 雷达系统学习路线
+├── Mechanic/                   # 机械方向（课程与学习路线）
+├── ENV_SETUP.md                # 环境配置 / 快速开始
+└── README.md
+```
+
+### 2526 → 2627 迁移对照
+
+| 2526 路径 | 2627 路径 | 说明 |
+| --- | --- | --- |
+| `Contents/Python/` | `Computing/01-Python/` | 课程内容原样迁移 |
+| `Contents/Linux/` | `Computing/02-Linux/` | 同上 |
+| `Contents/Cpp/` | `Computing/03-Cpp/` | 同上 |
+| `Contents/ROS2/` | `Computing/04-ROS2/` | 同上 |
+| `Contents/OpenCV/` | `Computing/Algorithm/05-OpenCV/` | 编入算法组课程 |
+| `Routes/Computing/README.md` | `Computing/README.md` | 路线并入方向总览 |
+| `Routes/Computing/Electronic/README.md` | `Computing/Control/README.md` | 电控组更名控制组 |
+| `Routes/Computing/Algorithm/Navigation/README.md` | `Computing/Navigation/README.md` | 导航独立成组 |
+| `Routes/Computing/Algorithm/Vision/README.md` | `Computing/Algorithm/README.md` | Vision 路线并入算法组 |
+| `Routes/Computing/Algorithm/Vision/Aiming/` | `Computing/Algorithm/Aiming/` | 自瞄路线 |
+| `Routes/Computing/Algorithm/Vision/Radar/` | `Computing/Algorithm/Radar/` | 雷达路线 |
+| `Contents/Mechanic/` + `Routes/Mechanic/` | `Mechanic/` | 课程内容与学习路线合并 |
+| 根目录 `ENV_SETUP.md` | 根目录 `ENV_SETUP.md` | 通用环境配置随仓库迁移 |
+
+### 学习路线分支图
+
+```mermaid
+graph TD
+    A[RoboMaster 战队培训] --> B[Computing 计算方向]
+    A --> C[Mechanic 机械方向]
+    B --> F[Algorithm 算法组]
+    B --> G[Navigation 导航组]
+    B --> E[Control 控制组]
+    C --> D[Mechanic 机械组]
+
+    C --> E
+
+    F --> H[Aiming 自瞄系统]
+    F --> I[Radar 雷达系统]
+    G --> J[Behavior Tree 行为树]
+    G --> K[Navigation 导航]
+    E --> L[AIMEtherCat 以太猫]
+    E --> M[STM32]
+    D --> N[Inventor 画图]
+    D --> O[Assembling 组装]
+```
+
+### 使用流程
+
+1. **确定专业方向** → 计算方向进入 [`Computing/`](./Computing/README.md)，机械方向进入 [`Mechanic/`](./Mechanic/README.md) 查看学习路线
+2. **公共基础学习** → 计算方向按 `01-Python → 02-Linux → 03-Cpp → 04-ROS2` 顺序完成基础课程
+3. **专业深化** → 进入所属组（控制 / 导航 / 算法）的路线与课程，或在基础课程完成后进入机械方向的专业内容
+
+## 专业方向选择
+
+### 计算方向（控制 / 导航 / 算法）
+
+适合对编程、算法、电路设计感兴趣的同学
+
+**核心技能**：Linux 系统管理、Python 编程、Cpp 编程、计算机视觉、嵌入式开发
+
+**就业方向**：软件工程师、算法工程师、嵌入式工程师、系统架构师
+
+- [查看计算方向总览](./Computing/README.md)
+- [查看控制组学习路线](./Computing/Control/README.md)
+- [查看导航组学习路线](./Computing/Navigation/README.md)
+- [查看算法组学习路线](./Computing/Algorithm/README.md)
+
+### 机械方向
+
+适合对机械设计、结构分析、制造工艺感兴趣的同学
+
+**核心技能**：3D 建模、力学分析、机械结构设计、制造工艺
+
+**就业方向**：机械设计工程师、结构工程师、制造工程师、产品经理
+
+[查看机械学习路线](./Mechanic/README.md)
+
+## 课程模块概览
+
+### 公共基础模块（计算方向所有组共同学习）
+
+- **Python 编程**：编程基础语法、数据结构、面向对象编程
+- **Cpp 编程**：Python 知识迁移
+- **Linux 基础**：Linux 系统操作、命令行工具、开发环境配置
+- **ROS2 系统**：机器人操作系统基础
+
+### 专业方向模块
+
+#### 计算方向
+
+- **控制**：通信协议（EtherCAT）、电机控制、嵌入式开发
+- **导航**：SLAM 定位建图、路径规划、运动控制
+- **算法**：OpenCV 视觉基础、自瞄系统、雷达系统
+
+#### 机械方向
+
+- **机械设计**：3D 建模、力学分析、结构设计
+
+## 培养目标
+
+### 计算方向毕业生能力
+
+- 熟练使用 Linux 进行开发工作
+- 编写 Python & Cpp 程序解决实际问题
+- 使用 OpenCV 进行基础图像处理
+- 借助 AI 工具提升开发效率
+- 具备 RoboMaster 机器人算法开发能力
+
+### 机械方向毕业生能力
+
+- 熟练使用 Inventor 进行 3D 建模设计
+- 理解机械设计中的力学原理
+- 掌握机器人常用机械结构设计
+- 具备独立设计机器人机械系统的能力
+- 掌握有限元分析和结构优化方法
+
+## 学习环境
+
+### 软件工具
+
+**计算方向**：Git、VS Code、虚拟机（Ubuntu 22.04）、Python、Cpp、OpenCV、ROS2 Humble、Linux 工具链
+
+**机械**：Autodesk Inventor
+
+### 硬件要求
+
+- 系统：计算方向 Windows 或 macOS 皆可，机械组需要 Windows
+- 内存：8GB+ （推荐 16GB+）
+- 硬盘：50GB+可用空间
+- 处理器：计算方向如是 Windows 需要支持虚拟化的 64 位 CPU
+- 网络：稳定的互联网连接，如果不在学校网络环境下需要代理
+
+## 学习资源
+
+### 在线资源
+
+- [CS 自学指南](https://csdiy.wiki/) - 计算机科学学习路径
+- [RoboMaster 官方技术论坛](https://www.robomaster.com/) - 比赛技术交流
+- [Autodesk 教育版](https://www.autodesk.com/education/) - 免费软件下载
+
+## 本地环境配置指南 / 快速开始
+
+- 请移步 [ENV_SETUP.md](./ENV_SETUP.md)
+
+## 维护人员名单
+
+- [Robert He](https://github.com/hnrobert)
+- [Xiaoyan Gong](https://github.com/Calc1te)
+- [Animex77](https://github.com/Animex77)
+- [lv_xin](https://github.com/lvxin1024)
+- [HappyDog](https://github.com/HappyDog060713)
+- [AnthonyBvvd](https://github.com/AnthonyBvvd)
+
+祝食用愉快！

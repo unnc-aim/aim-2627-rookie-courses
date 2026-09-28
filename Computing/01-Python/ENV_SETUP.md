@@ -62,21 +62,21 @@ python3 --version
 
 > UNNCers 别老想着装 Chinese 扩展，英文界面更符合编程习惯。
 >
-> 同时推荐的 Python 相关的拓展组合 ⬇️
+> 同时推荐的 Python 相关的拓展组合：
 >
 > - ms-python.autopep8 # 自动格式化代码
 > - ms-python.isort # 自动排序 import 语句
 > - ms-python.vscode-pylance # 静态代码检查
 >
-> 以及啥项目都能用的 ⬇️
+> 以及啥项目都能用的：
 >
 > - streetsidesoftware.code-spell-checker # 拼写检查
 >
-> 以及，为了更好地在 VS Code 中阅读 Markdown 文件（本教程使用的格式），推荐安装 ⬇️
+> 以及，为了更好地在 VS Code 中阅读 Markdown 文件（本教程使用的格式），推荐安装以下拓展
 >
 > - DavidAnson.vscode-markdownlint # Markdown 语法检查，可选
 >
-> 以及，为了更好地阅读 Jupyter Notebook 文件（.ipynb），推荐安装拓展包 ⬇️
+> 以及，为了更好地阅读 Jupyter Notebook 文件（.ipynb），推荐安装以下拓展包
 >
 > - ms-toolsai.jupyter # Jupyter Notebook 支持
 
