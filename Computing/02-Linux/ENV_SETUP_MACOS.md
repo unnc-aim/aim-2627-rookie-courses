@@ -1,76 +1,79 @@
-# Parallels 到 Ubuntu 22.04（macOS）完整安装指南
+# VirtualBox 安装 Ubuntu 24.04 LTS（macOS）完整安装指南
 
-简明步骤：准备 -> 下载 Parallels -> 下载并校验 Ubuntu ISO（注意芯片架构） -> 新建虚拟机（Parallels） -> 安装 Ubuntu -> 安装 Parallels Tools -> 常用配置与排错。
+简明步骤：确认芯片架构 -> 下载并安装 VirtualBox -> 下载 Ubuntu 24.04 ISO -> 新建虚拟机 -> 安装 Ubuntu -> 安装增强功能 -> 常用配置与排错。
 
-## 0. 为什么在 macOS 上用 Parallels？
+## 0. 为什么在 macOS 上用 VirtualBox？
 
-当你需要在 mac 上运行另一套完整 Linux 系统，有几种选择：双系统（Boot Camp，只限 Intel）、容器/WSL（不适用于 macOS）和虚拟机。  
-Parallels 的优点：集成度高、与 macOS 共享剪贴板与文件夹、图形显示与性能调优方便、界面友好。对于 Apple Silicon 需要使用 ARM 版系统镜像；对于 Intel mac 则使用 x86_64（amd64）镜像。
+当你需要在 mac 上运行另一套完整 Linux 系统，有几种选择：双系统（Boot Camp，只限 Intel）、容器/WSL（不适用于 macOS）和虚拟机。
+VirtualBox 的优点：免费开源、无需订阅或密钥，并且与 Windows 侧队友使用同一套工具，遇到问题时互相能对上话。
 
-## 1. 下载、安装与许可 Parallels Desktop
+**先确认你的芯片**（苹果菜单 -> 关于本机 -> 查看芯片）：
 
-- 如果你很 rich，看这里走流程：
-  - 从 Parallels 官方下载合适的版本（确保与 macOS 版本和芯片架构兼容）。
-    - 官方站点有试用版或购买选项。
-  - 安装：一般为 .dmg -> 将 Parallels 拖到 Applications，首次运行会提示授予权限（系统偏好设置 / 系统设置 → 隐私与安全 → 必要时允许扩展或许可）。
-  - 许可密钥：可使用试用期或输入购买的密钥。
-- 也可以试试 [学长友情提供资源](http://ug.link/hnrobert-nas/filemgr/share-download/?id=90c4eb9c939f4d04b80d81a9c02d5d5d)（期限到 25 年 10 月底链接自动关闭）：
+- **Intel（x86_64）**：原生运行 VirtualBox，开箱即用。
+- **Apple Silicon（M1-M4 等 ARM 芯片）**：VirtualBox（x86 版）可以通过 macOS 的 **Rosetta 2 转译**在 ARM Mac 上运行，功能完整、开箱可用，但没有硬件虚拟化加速，性能有明显损耗。完成课程练习没有问题；重负载任务（如 ROS2 大工程编译）建议申请战队可远控的实体机。
 
-注意：无需在 mac 上开启 BIOS 虚拟化（这是 PC 的操作）；但在 macOS 上需允许 Parallels 请求的所有权限（屏幕录制、文件访问、扩展等），否则部分功能受限。
+两种芯片的安装步骤一致，唯一区别是 Apple Silicon 需要先装好 Rosetta 2（见第 1 节）。
+
+## 1. 下载并安装 VirtualBox
+
+- **Apple Silicon 用户先确认 Rosetta 2 已安装**（之前运行过 Intel 应用的 Mac 一般已自动装好），没有的话在终端执行：
+
+```bash
+softwareupdate --install-rosetta --agree-to-license
+```
+
+- 从 VirtualBox 官网下载：[官方地址](https://www.virtualbox.org/wiki/Downloads)，选择 **macOS / OS X hosts** 的最新稳定版（7.x），得到 .dmg 安装包。
+- 双击 .dmg 按提示安装；首次运行若被系统拦截，在「系统设置 -> 隐私与安全性」中点击「仍要打开」并允许 VirtualBox 请求的权限。
+
+注意：macOS 上无需开启 BIOS 虚拟化（这是 PC 的操作）。
 
 ## 2. 下载 Ubuntu 镜像（ISO）
 
-- 官方下载： <https://ubuntu.com/download/alternative-downloads>
-- 关键点：根据 Mac 的芯片选择镜像：
-  - Apple Silicon：选择 ARM（aarch64 / arm64）版本的 Ubuntu 22.04 LTS（Desktop 的 ARM 版本）。
-  - Intel（x86_64）：选择 amd64（x86_64）版本的 Ubuntu 22.04 LTS Desktop。
+- 统一选择 amd64（x86_64）版本的 **Ubuntu 24.04 LTS Desktop**——包括 Apple Silicon 用户：转译模式下 VirtualBox 与虚拟机都是 x86_64，不要选 arm64 镜像。
+- 官方下载：<https://ubuntu.com/download/alternative-downloads>
 - 国内镜像（可选）：
-  - 清华： <https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/>
-  - 阿里： <https://mirrors.aliyun.com/ubuntu-releases/>
+   - 清华：<https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/>
+   - 阿里：<https://mirrors.aliyun.com/ubuntu-releases/>
 - 校验 ISO：建议比对 SHA256 校验和以确认下载完整。
 
-## 3. 在 Parallels 中创建虚拟机
+## 3. 创建虚拟机
 
-1. 打开 Parallels Desktop → File → New（新建）。
-2. 选择 “Install Windows or another OS from a DVD or image file” 或者直接把下载好的 ISO 拖入 Parallels 的新建窗口，Parallels 会自动识别。
-3. 选择 Ubuntu 22.04 对应的 ISO（确保架构正确：arm64 vs amd64）。
-4. 设置虚拟机名称和保存位置（默认放 Applications/Parallels 或你指定的位置）。
-5. 配置虚拟机硬件（可后续调整）：
-   - CPU：分配 2–4 个核心（或更多，取决于主机资源）。
-   - 内存：建议 4GB 或更高（至少 2048 MB，开发/编译建议 8GB+）。
-   - 磁盘：20–40GB 动态分配（建议 40GB 起，按需扩展）。
-   - 网络：Shared（默认，便于上网）；需局域网访问可选 Bridged。
-6. 完成创建并启动虚拟机。
+1. 打开 VirtualBox -> 新建（New）。
+2. 名称随意（如 `Ubuntu 24.04`），类型 `Linux`，版本 `Ubuntu (64-bit)`，ISO Image 选择刚下载的 ISO。
+3. **勾选 Skip Unattended Installation（跳过无人值守安装）**，这样会进入 Ubuntu 的图形安装界面，与课程演示一致。
+4. 硬件配置建议：
+   - 内存：4096 MB 起步（开发/编译建议 8192 MB）。
+   - 处理器：2-4 核（取决于主机资源）。
+   - 磁盘：40GB 或更大，默认 VDI 动态分配即可。
+5. 完成创建后启动虚拟机。
 
-提示：Parallels 有预设配置（开发者、设计师、游戏等），可按需选择快速设置。
+## 4. 在虚拟机中安装 Ubuntu 24.04
 
-## 4. 在虚拟机中安装 Ubuntu 22.04
-
-1. 启动虚拟机后进入 Ubuntu 安装界面，选择语言并点击 “Install Ubuntu”。
-2. 键盘布局、更新与其它软件：建议勾选安装第三方软件以支持 Wi‑Fi、显卡驱动（如适用）。
-3. 分区：使用推荐的“Erase disk and install Ubuntu”（这是虚拟磁盘，仅影响 VM）。
+1. 启动虚拟机后进入 Ubuntu 安装界面，语言中文，选择「安装 Ubuntu」。
+2. 键盘默认；建议勾选安装第三方软件以支持 Wi-Fi、显卡驱动等。
+3. 分区：使用推荐的「清除整个磁盘并安装 Ubuntu」（这是虚拟磁盘，仅影响 VM）。
 4. 设置用户名、密码、时区（例如上海）。
 5. 等待安装完成，按提示重启虚拟机。
 
-注意：如果使用 ARM 镜像并在 Apple Silicon 上运行，安装过程与 x86 类似，但某些第三方驱动或软件包可能需要额外注意。
+## 5. 安装增强功能（Guest Additions）
 
-## 5. 安装 Parallels Tools（增强功能）
+最简方式：虚拟机内打开终端执行以下命令后重启，即提供自适应分辨率、共享剪贴板、拖放等功能：
 
-- 安装完成并登录后，从 Parallels 菜单选择：Actions → Install Parallels Tools（或在窗口提示中点击安装）。
-- Parallels Tools 提供：
-  - 更好的显示分辨率与自动调整。
-  - 共享文件夹、共享剪贴板、拖放、无缝模式。
-  - 时间同步、VM 驱动与性能改进。
-- 若安装失败：通常需要在虚拟机内安装 build-essential、linux-headers（`sudo apt update && sudo apt install build-essential dkms linux-headers-$(uname -r)`），然后重新运行 Parallels Tools 安装脚本。
+```bash
+sudo apt update && sudo apt install -y virtualbox-guest-utils
+```
+
+备选方式：VirtualBox 菜单「设备 -> 安装增强功能」挂载 ISO，先安装编译依赖（`sudo apt install -y build-essential dkms linux-headers-$(uname -r)`），再在挂载目录运行 `sudo ./VBoxLinuxAdditions.run`。
 
 ## 6. 常用配置与排错
 
-- 共享文件夹/剪贴板：在 Parallels 配置里开启 Shared Folders 与 Shared Clipboard。
-- 分辨率/全屏：安装 Parallels Tools 后自动工作；手动可调整 Display 设置。
-- 网络问题：尝试切换 Shared / Bridged；检查 mac 防火墙设置。
-- 无法引导 ISO：确认 ISO 架构与主机芯片一致（虽然 Apple Silicon 能运行 x86_64 ISO，但是需要转译）。
-- Parallels 权限提示：在 macOS 系统设置 → 隐私与安全 中允许 Parallels 的相关权限和扩展。
-- 性能优化：关闭不需要的 macOS 应用，增加 VM 内存/CPU，使用 SSD 存储 VM 文件。
-- 常见命令：安装常用编译依赖 sudo apt update && sudo apt install build-essential curl git
+- 共享剪贴板 / 拖放：先关机，再「设置 -> 常规 -> 高级」把共享剪贴板与拖放改为「双向」（需先装好增强功能）。
+- 共享文件夹：「设置 -> 共享文件夹」添加主机目录，勾选自动挂载。
+- 分辨率 / 全屏：安装增强功能后自动工作；手动可调「视图 -> 虚拟屏幕」。
+- 网络问题：默认 NAT 可上网；需要局域网访问可选「桥接网卡」，并检查 mac 防火墙设置。
+- VirtualBox 权限提示：在「系统设置 -> 隐私与安全性」中允许 VirtualBox 的相关权限和扩展。
+- Apple Silicon 提示需要 Rosetta / 无法启动：执行第 1 节的 Rosetta 2 安装命令后重试。
+- 性能优化：关闭不需要的 macOS 应用，增加 VM 内存/CPU，使用 SSD 存储 VM 文件；Apple Silicon 转译模式下卡顿属正常现象，可关闭虚拟机内动画效果，或改用远控实体机。
+- 常用命令：安装常用编译依赖 `sudo apt update && sudo apt install build-essential curl git`
 
-结束语：按以上步骤可以在 macOS（Intel 或 Apple Silicon）上通过 Parallels 快速搭建 Ubuntu 22.04 虚拟机。如遇特定错误，把错误信息贴出来可进一步定位解决方法。
+结束语：按以上步骤可以在 Intel 或 Apple Silicon（Rosetta 2 转译）Mac 上通过 VirtualBox 快速搭建 Ubuntu 24.04 LTS 虚拟机；Apple Silicon 上如遇性能瓶颈，可申请战队远控实体机。如遇特定错误，把错误信息贴出来可进一步定位解决方法。

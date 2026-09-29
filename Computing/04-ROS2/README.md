@@ -1,8 +1,8 @@
 # ROS2 教程：从入门到实战
 
-> **系统要求**：Ubuntu 22.04 + ROS2 Humble
+> **系统要求**：Ubuntu 24.04 + ROS2 Jazzy
 >
-> 本教程专为 Ubuntu 22.04 系统配置 ROS2 Humble 发行版
+> 本教程专为 Ubuntu 24.04 系统配置 ROS2 Jazzy 发行版
 >
 > 上课可能会过快导致底层的东西和原理不一定能讲到，也推荐阅读一下 ROS2 [官方文档](https://docs.ros.org/en/rolling/index.html)和[小鱼大佬写的中文文档](https://fishros.com/d2lros2/#/)。
 
@@ -10,7 +10,7 @@
 
 ## 1. Linux 基础
 
-- 介绍 Linux 与 Ubuntu 22.04
+- 介绍 Linux 与 Ubuntu 24.04
 - 安装
 - 基本指令
 
@@ -18,22 +18,22 @@
 
 ## 2. ROS2 入门
 
-[官方环境配置文档+初体验Examples(Ubuntu 22.04 ROS2 Humble deb packages)](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debs.html)
+[官方环境配置文档+初体验Examples(Ubuntu 24.04 ROS2 Jazzy deb packages)](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
 > 跟着步骤走到 Next steps after installing 之前
 
 ### 节点，包，工作空间介绍
 
-[概念介绍](https://fishros.com/d2lros2/#/humble/chapt2/get_started/1.ROS2%E8%8A%82%E7%82%B9%E4%BB%8B%E7%BB%8D)
+[概念介绍](https://fishros.com/d2lros2/#/jazzy/chapt2/get_started/1.ROS2%E8%8A%82%E7%82%B9%E4%BB%8B%E7%BB%8D)
 
 ### 节点通信
 
 #### Publisher && Subscribe
 
-[链接](https://fishros.com/d2lros2/#/humble/chapt3/get_started/1.ROS2%E8%AF%9D%E9%A2%98%E5%85%A5%E9%97%A8)
+[链接](https://fishros.com/d2lros2/#/jazzy/chapt3/get_started/1.ROS2%E8%AF%9D%E9%A2%98%E5%85%A5%E9%97%A8)
 
 #### Server && Client
 
-[链接](https://fishros.com/d2lros2/#/humble/chapt3/get_started/4.ROS2%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8)
+[链接](https://fishros.com/d2lros2/#/jazzy/chapt3/get_started/4.ROS2%E6%9C%8D%E5%8A%A1%E5%85%A5%E9%97%A8)
 
 ---
 
@@ -95,7 +95,7 @@ target_link_libraries(库文件名称/可执行文件名称 链接的库文件�
 
 ## 5. 话题通信
 
-> [code from here](https://fishros.com/d2lros2/#/humble/chapt3/get_started/2.%E8%AF%9D%E9%A2%98%E4%B9%8BRCLCPP%E5%AE%9E%E7%8E%B0)
+> [code from here](https://fishros.com/d2lros2/#/jazzy/chapt3/get_started/2.%E8%AF%9D%E9%A2%98%E4%B9%8BRCLCPP%E5%AE%9E%E7%8E%B0)
 
 ### 5.1 创建话题包
 
@@ -349,7 +349,7 @@ ros2 launch ros2_topic_demo demo_launch.py
 > 2. 在 packages.xml 中导入，具体是添加 depend 标签并将消息接口写入。
 > 3. 在代码中导入，C++中是#include"消息功能包/xxx/xxx.hpp"。
 
-[code from here](https://fishros.com/d2lros2/#/humble/chapt3/get_started/5.%E6%9C%8D%E5%8A%A1%E4%B9%8BRCLCPP%E5%AE%9E%E7%8E%B0)
+[code from here](https://fishros.com/d2lros2/#/jazzy/chapt3/get_started/5.%E6%9C%8D%E5%8A%A1%E4%B9%8BRCLCPP%E5%AE%9E%E7%8E%B0)
 
 ### 6.1 创建服务包
 
@@ -505,7 +505,7 @@ ros2 service call /add_two_ints_srv example_interfaces/srv/AddTwoInts "{a: 3, b:
 - **明明编译过但找不到可执行**：忘了 `source install/setup.bash`；或修改了入口脚本却没重建。
 - **话题没数据**：确认 talker 正在运行、话题名一致，`ros2 topic list` 查看是否存在。
 - **服务不可用**：客户端启动时会等待服务注册；确认服务端处于运行态，或用 `ros2 service list` 检查。
-- **环境冲突**：同机多发行版并存时，务必检查当前 `source` 的是 ROS2 Humble（`/opt/ros/humble/setup.bash`）。
+- **环境冲突**：同机多发行版并存时，务必检查当前 `source` 的是 ROS2 Jazzy（`/opt/ros/jazzy/setup.bash`）。
 
 ---
 

@@ -4,7 +4,7 @@
 
 ## 课程概述
 
-本培训体系专为 RoboMaster 战队新成员设计，涵盖**计算**和**机械**两大专业方向。计算方向下设**控制、导航、算法**三个平行组，无论你选择哪个方向，都将获得扎实的理论基础和丰富的实践经验。
+本培训体系专为 AIM Robotics 战队新成员设计，涵盖**计算**和**机械**两大专业方向。计算方向下设**控制、导航、算法**三个平行组，无论你选择哪个方向，都将获得扎实的理论基础和丰富的实践经验。
 
 ## 2627 学年新变化
 
@@ -39,24 +39,6 @@ aim-2627-rookie-courses/
 ├── ENV_SETUP.md                # 环境配置 / 快速开始
 └── README.md
 ```
-
-### 2526 → 2627 迁移对照
-
-| 2526 路径 | 2627 路径 | 说明 |
-| --- | --- | --- |
-| `Contents/Python/` | `Computing/01-Python/` | 课程内容原样迁移 |
-| `Contents/Linux/` | `Computing/02-Linux/` | 同上 |
-| `Contents/Cpp/` | `Computing/03-Cpp/` | 同上 |
-| `Contents/ROS2/` | `Computing/04-ROS2/` | 同上 |
-| `Contents/OpenCV/` | `Computing/Algorithm/05-OpenCV/` | 编入算法组课程 |
-| `Routes/Computing/README.md` | `Computing/README.md` | 路线并入方向总览 |
-| `Routes/Computing/Electronic/README.md` | `Computing/Control/README.md` | 电控组更名控制组 |
-| `Routes/Computing/Algorithm/Navigation/README.md` | `Computing/Navigation/README.md` | 导航独立成组 |
-| `Routes/Computing/Algorithm/Vision/README.md` | `Computing/Algorithm/README.md` | Vision 路线并入算法组 |
-| `Routes/Computing/Algorithm/Vision/Aiming/` | `Computing/Algorithm/Aiming/` | 自瞄路线 |
-| `Routes/Computing/Algorithm/Vision/Radar/` | `Computing/Algorithm/Radar/` | 雷达路线 |
-| `Contents/Mechanic/` + `Routes/Mechanic/` | `Mechanic/` | 课程内容与学习路线合并 |
-| 根目录 `ENV_SETUP.md` | 根目录 `ENV_SETUP.md` | 通用环境配置随仓库迁移 |
 
 ### 学习路线分支图
 
@@ -155,7 +137,7 @@ graph TD
 
 ### 软件工具
 
-**计算方向**：Git、VS Code、虚拟机（Ubuntu 22.04）、Python、Cpp、OpenCV、ROS2 Humble、Linux 工具链
+**计算方向**：Git、VS Code、虚拟机（VirtualBox / Ubuntu 24.04 LTS）、Python、Cpp、OpenCV、ROS2 Jazzy、Linux 工具链
 
 **机械**：Autodesk Inventor
 

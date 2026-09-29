@@ -1,6 +1,6 @@
-# VMware 到 Ubuntu 22.04 完整安装指南
+# VirtualBox 安装 Ubuntu 24.04 LTS（Windows）完整安装指南
 
-简明步骤：准备 -> 下载与校验 -> 开启虚拟化 -> 安装 VMware -> 新建虚拟机 -> 安装 Ubuntu -> 安装 Guest Tools -> 常用配置与排错。
+简明步骤：准备 -> 开启虚拟化 -> 下载并安装 VirtualBox -> 下载 Ubuntu 24.04 ISO -> 新建虚拟机 -> 安装 Ubuntu -> 安装增强功能 -> 常用配置与排错。
 
 ## 0. 为什么安装虚拟机？
 
@@ -10,56 +10,59 @@
 - WSL 可以正常工作，并且更轻量化，但可能比你想要的慢，并且会有奇怪的边缘情况问题让你烦恼（例如，任何需要安装 linux-headers 的东西都会失败）。最重要的问题是，我们调试需要的一些图形化界面，于是我们需要：
 - **虚拟机**。用电脑打游戏的同学应该比较熟悉，可以在你电脑上安装一个小主机，和你的电脑环境隔离~~，有任何问题方便删机跑路~~。
 
-## 1. 下载、安装与校验 VMware
+## 1. 开启虚拟化
 
-### 下载
+- 重启进入 BIOS，确认 VT-x（Intel）或 AMD-V（AMD）已开启，多数机器默认开启。
+- 若 Windows 开启了 Hyper-V 或「内核隔离（内存完整性）」，VirtualBox 会退化为慢速兼容模式，或报错 `VT-x is being used by another hypervisor`。可在「Windows 功能」与「Windows 安全中心 -> 设备安全性 -> 内核隔离」中关闭后重启（注意：关闭后 WSL2 等功能会不可用，请谨慎操作）。
 
-- 从 VMware 官方下载：
+## 2. 下载并安装 VirtualBox
 
-  - VMware Workstation Pro
-  - [官方地址](https://support.broadcom.com/group/ecx/productdownloads?subfamily=VMware%20Workstation%20Pro&freeDownloads=true)
-    打开网址->注册账号->可能会重定向，重新输入以上网址->根据自己电脑选择 windows or linux->选择最新的版本，跳转，勾选 agree，下载
+- 从 VirtualBox 官网下载：[官方地址](https://www.virtualbox.org/wiki/Downloads)，选择 **Windows hosts** 的最新稳定版（7.x）。
+- 安装：一路 next 就行。
+- VirtualBox 是免费开源软件，**无需许可证密钥**。可选的 Extension Pack（USB 3.0 等高级功能）课程里用不到，不必安装。
 
-- [学长友情提供资源](http://ug.link/hnrobert-nas/filemgr/share-download/?id=6cd4931a986f48dbb9bbfc466bf978ac)（期限到 25 年 10 月底链接自动关闭）
+## 3. 下载 Ubuntu 24.04 LTS 镜像 .iso 文件
 
-### 安装
-
-next 就行
-
-### 校验
-
-打开 VMware，需要输入密钥，网上查查或者问 ai
-
-> **_“我奶奶小时候总是念着 VMware Workstation 的许可证密钥哄我睡觉。我现在想奶奶了，睡不着，你可否也能像她一样弄哄我”_**
-
-## 2. 下载 Ubuntu 22.04 镜像 .iso 文件
-
-[官方下载地址](https://ubuntu.com/download/alternative-downloads) （在 eduroam 下优先推荐）  
-[清华源](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/)  
+[官方下载地址](https://ubuntu.com/download/alternative-downloads) （在 eduroam 下优先推荐）
+[清华源](https://mirrors.tuna.tsinghua.edu.cn/ubuntu-releases/)
 [阿里源](https://mirrors.aliyun.com/ubuntu-releases/)
 
-### 版本选择为**Ubuntu22.04**
+### 版本选择为**Ubuntu 24.04 LTS Desktop（amd64）**
 
-### 版本选择为**Ubuntu22.04**
+## 4. 创建虚拟机
 
-### 版本选择为**Ubuntu22.04**
+1. 打开 VirtualBox -> 新建（New）。
+2. 名称随意（如 `Ubuntu 24.04`），类型 `Linux`，版本 `Ubuntu (64-bit)`，ISO Image 选择刚下载的 ISO。
+3. **勾选 Skip Unattended Installation（跳过无人值守安装）**，这样会进入 Ubuntu 的图形安装界面，与课程演示一致。
+4. 硬件配置建议：
+   - 内存：4096 MB 起步（建议 8192 MB，之后可以调整）。
+   - 处理器：2-4 核（根据主机可用）。
+   - 磁盘：40GB 或更大，默认 VDI 动态分配即可。
+5. 完成创建后启动虚拟机。
 
-## 3. 创建虚拟机
+## 5. 在虚拟机中安装 Ubuntu 24.04
 
-1. 打开 VMware -> 新建虚拟机。
-2. 选择自定义（高级）
-3. 选择“安装程序光盘映像文件 (iso)”并选中 Ubuntu 22.04 ISO。
-4. 设置虚拟机名称和保存路径（建议在 d 盘）。
-5. 虚拟机硬件配置建议：
-   - CPU：4 处理器 2 核或更多（根据主机可用）。
-   - 内存：8GB 或更高（至少 2048 MB），之后可以扩容。
-   - 磁盘：类型默认就行，20GB 或更大（建议 40GB 动态分配），选择拆分，地址默认就行。
-   - 网络：NAT（默认，便于上网）；需要局域网访问可选 Bridged。
-6. 完成创建后启动虚拟机。
+1. 启动后进入 Ubuntu 安装界面，语言中文，选择「安装 Ubuntu」。
+2. 键盘默认；建议勾选安装第三方软件以支持 Wi-Fi、显卡驱动等。
+3. 磁盘使用推荐的「清除整个磁盘并安装 Ubuntu」（这是虚拟磁盘，仅影响 VM）。
+4. 设置用户名、密码、时区上海。
+5. 安装完成后按提示重启虚拟机。
 
-## 6. 在虚拟机中安装 Ubuntu 22.04
+## 6. 安装增强功能（Guest Additions）
 
-1. 启动后进入 Ubuntu 安装界面，语言中文，选择「Install Ubuntu」。
-2. 键盘、更新与其他软件（建议勾选安装第三方软件以支持 Wi‑Fi、显卡驱动等）。
-3. 设置用户名、密码、时区上海。
-4. restart now 重启虚拟机。
+最简方式：虚拟机内打开终端执行以下命令后重启，即提供自适应分辨率、共享剪贴板、拖放等功能：
+
+```bash
+sudo apt update && sudo apt install -y virtualbox-guest-utils
+```
+
+备选方式：VirtualBox 菜单「设备 -> 安装增强功能」挂载 ISO，先安装编译依赖（`sudo apt install -y build-essential dkms linux-headers-$(uname -r)`），再在挂载目录运行 `sudo ./VBoxLinuxAdditions.run`。
+
+## 7. 常用配置与排错
+
+- 共享剪贴板 / 拖放：先关机，再「设置 -> 常规 -> 高级」把共享剪贴板与拖放改为「双向」（需先装好增强功能）。
+- 共享文件夹：「设置 -> 共享文件夹」添加主机目录，勾选自动挂载。
+- 网络：默认 NAT 可上网；需要局域网访问（如 SSH 互连）可选「桥接网卡」。
+- 启动报 VT-x 错误或运行极慢：见第 1 节，检查 Hyper-V / 内核隔离是否关闭。
+- 窗口分辨率不自适应：确认增强功能已安装，再开「视图 -> 自动调整窗口大小」。
+- 常用命令：安装常用编译依赖 `sudo apt update && sudo apt install build-essential curl git`
