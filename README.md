@@ -1,6 +1,6 @@
-# RoboMaster 战队新成员培训课程（2026-2027 学年）
+# AIM Robotics 战队新成员培训课程（2026-2027 学年）
 
-> 本仓库是 UNNC AIM 战队 **2627 学年**的新生培训课程仓库。跨学年的仓库总览与整体使用指南请移步 [aim-rookie-courses](https://github.com/unnc-aim/aim-rookie-courses)。
+> 本仓库是 UNNC AIM 战队 **2627 学年**的新生培训课程仓库。跨学年的仓库总览与整体使用指南可移步 [aim-rookie-courses](https://github.com/unnc-aim/aim-rookie-courses)。
 
 ## 课程概述
 
@@ -18,7 +18,7 @@
    - **算法组聚焦视觉方向**（自瞄 / 雷达），原 Vision 学习路线并入算法组。
 4. **课程全局编号**：公共基础课 `01`-`04` 为计算方向全组必修，其后课程按开课顺序全局连续编号（如算法组首门课程 `05-OpenCV`）。
 
-课程内容本身未做修改，仅调整目录布局并更新文档中的引用路径。
+课程内容本身也将有小幅调整，我们会逐步更新。更新历史/日志可见 <https://github.com/unnc-aim/aim-2627-rookie-courses/commits/main/>
 
 ### 目录结构
 
