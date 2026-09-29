@@ -19,6 +19,8 @@ Python 编程模块包含 3 节课程，从基础语法开始，逐步深入到�
 
 请移步 [环境配置指南](./ENV_SETUP.md)
 
+> 使用 AI 编程助手写作业的同学，记得按环境指南安装战队规范 skill `aim-common-rules`，让 AI 自动遵循战队 Python 规范。
+
 ## 课程安排
 
 ### Lesson-1: Python 基础语法和数据类型（2 学时）

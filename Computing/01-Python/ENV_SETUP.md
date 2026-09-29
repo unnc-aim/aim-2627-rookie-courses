@@ -102,6 +102,18 @@ python3 --version
 然后，你就可以正常打开项目中的 .ipynb 文件，运行里面的代码单元了。  
 运行时如果提示没有找到内核（kernel），点击选择内核，选择你刚刚配置的 venv 解释器即可。
 
+## 战队规范 Skill (aim-common-rules)
+
+如果你会使用 AI 编程助手（Claude Code / Cursor / Cline / GitHub Copilot 等，见下节）来写课程代码，推荐安装战队规范 skill `aim-common-rules`。装上之后，AI 助手会在**格式化 Python 代码、排序 import、写 commit message** 等场景自动遵循战队规范（autopep8 + isort、PEP 8、行宽 79），和上面推荐的两款扩展保持同一套标准，帮你省去翻文档的时间。
+
+在任意目录执行下面这行即可（`npx skills` 会自动识别并安装到你本地所有 agent —— Claude Code / Cursor / Codex 等）：
+
+```bash
+npx skills add unnc-aim/aim-common-agentic-skills --skill aim-common-rules -g
+```
+
+`-g` 全局（所有项目，推荐）；不加则装到当前项目。skill 源码与完整规范见 [unnc-aim/aim-common-agentic-skills](https://github.com/unnc-aim/aim-common-agentic-skills)。根目录 [ENV_SETUP.md](../../ENV_SETUP.md) 也有此说明，这里是再次提醒。
+
 ## 提示
 
 - 如果你在安装或配置过程中遇到问题，可以参考 [Python 官方文档](https://docs.python.org/3/) 或 [VS Code 官方文档](https://code.visualstudio.com/docs)。
