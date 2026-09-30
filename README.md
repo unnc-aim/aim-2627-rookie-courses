@@ -79,6 +79,40 @@ graph TD
 
 **就业方向**：软件工程师、算法工程师、嵌入式工程师、系统架构师
 
+| 组别 | 职责 | 典型产出 | 主技术栈 |
+| --- | --- | --- | --- |
+| 控制 | 让机构精确执行动作：电机、底盘、云台、发射机构 | 控制器固件 | C++、STM32、EtherCAT、RTOS |
+| 导航 | 让机器人知道在哪、要去哪、怎么走 | 导航栈与行为决策 | ROS2、SLAM、规划算法 |
+| 算法 | **除了导航和控制之外的全部**：视觉（自瞄 / 雷达）、裁判系统协议、数据工具、整车集成 | 感知 / 协议库 / 工具链 / 主 workspace | C++、Python、OpenCV、ROS2 |
+
+#### 各组典型仓库（往届项目）
+
+> 仓库前缀是赛季 / 比赛代号（如 `26RC` = 2026 RoboCon 赛季），完整命名规则见 [战队规范](https://github.com/unnc-aim/.github)。
+
+##### 控制组
+
+- [suction_control](https://github.com/unnc-aim/suction_control) - 吸盘机构控制
+- [26RC_R1_controller](https://github.com/unnc-aim/26RC_R1_controller) - 26RC R1 机器人主控制器
+- [universal_controller](https://github.com/unnc-aim/universal_controller) - 通用控制器接口架构（第一版）
+
+##### 导航组
+
+- [27UL_Sentry_behavior](https://github.com/unnc-aim/27UL_Sentry_behavior) - 哨兵机器人行为决策
+- [26UL_pb2025_sentry_nav](https://github.com/unnc-aim/26UL_pb2025_sentry_nav) - 哨兵导航 Sim2Real 方案（PolarBear 战队 RoboMaster 2025 开源包，导航组参考实现）
+
+##### 算法组
+
+- [26UL_sp_vision_25_rosy](https://github.com/unnc-aim/26UL_sp_vision_25_rosy) - 魔改同济自瞄视觉（ROS 兼容上车版）
+- [26RC_R2_kfs_tracker](https://github.com/unnc-aim/26RC_R2_kfs_tracker) - RoboCon KFS 方块目标跟踪
+- [26RC_R2_spear_head_tracker](https://github.com/unnc-aim/26RC_R2_spear_head_tracker) - RoboCon 2026 矛头目标跟踪
+- [26UL_dji_referee_protocol](https://github.com/unnc-aim/26UL_dji_referee_protocol) - DJI 裁判系统协议解析
+- [27UL_Sentry_ws](https://github.com/unnc-aim/27UL_Sentry_ws) - 哨兵整车主 workspace：中等复杂度机器人的主 workspace 由算法组负责组织，部分 submodule 暂未公开，可参考其组织结构
+- [aim-feishu-rm-assistant](https://github.com/unnc-aim/aim-feishu-rm-assistant) - 飞书 RM 助手（Go）
+- [rm-search](https://github.com/unnc-aim/rm-search) - RM 资料搜索引擎（Go）
+- [RoboMark](https://github.com/unnc-aim/RoboMark) - 数据集标注平台（Vue）
+
+#### 学习路线
+
 - [查看计算方向总览](./Computing/README.md)
 - [查看控制组学习路线](./Computing/Control/README.md)
 - [查看导航组学习路线](./Computing/Navigation/README.md)
