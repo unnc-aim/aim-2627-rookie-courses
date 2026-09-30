@@ -26,10 +26,9 @@
 
 - 远程开发
    - ms-vscode-remote.remote-ssh # 远程 SSH
-   - ms-vscode-remote.remote-ssh-edit # 远程 SSH 编辑
    - ms-vscode-remote.remote-containers # 远程容器
    - ms-vscode.remote-explorer # 远程资源管理器
-   - ms-vscode.remote-server # 远程隧道 （支持非局域网设备远程连接）
+   - hnrobert.vscode-ssh-config-all-in-one # SSH 配置管理 (~~夹带私货~~ 可选)
 - 报错 inline 显示
    - usernamehw.errorlens # 报错 inline 显示
 - 文件图标
@@ -37,8 +36,6 @@
 - Git / GitHub 相关
    - eamodio.gitlens # Git 增强 / inline 显示
    - github.vscode-pull-request-github # GitHub PR 管理
-   - github.copilot # AI 编程助手 （GitHub Education 免费申请教程请移步 [这里](https://github.com/unnc-aim/aim-tutorial/tree/main/GitHubEducation)）
-   - github.copilot-chat # AI 编程助手聊天
 - 拼写检查
    - streetsidesoftware.code-spell-checker # 拼写检查
 - 本地路径智能提示
@@ -52,7 +49,6 @@
 
 为了更好地在 VS Code 中阅读 Markdown 文件（本教程也使用的格式），推荐安装以下拓展
 
-- bierner.markdown-mermaid # 支持 mermaid 流程图
 - yzhang.markdown-all-in-one # Markdown 增强，可选
 - DavidAnson.vscode-markdownlint # Markdown 语法检查，可选
 
