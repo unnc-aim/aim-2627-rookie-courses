@@ -45,8 +45,10 @@ python3 --version
 
 ### Visual Studio Code (IDE)
 
-> 注意：不是 ~~Visual Studio~~  
-> 几年前如果你说它是个 `IDE` 时，不少人会纠正你说，这个只是“轻量级”的「代码编辑器」，但现在它已经非常强大，完全可以胜任 Python 等几乎所有语言的基础开发任务，thanks to 它丰富的插件生态。  
+> 注意：不是 ~~Visual Studio~~，这是完全不同的两个软件，Visual Studio 是微软的一个大型 IDE，主要用于 C#、C++ 等开发。
+>
+> 几年前如果你说 vscode 是个 `IDE`，不少人会纠正你说，这个只是“轻量级”的「代码编辑器」，但现在它已经非常强大，完全可以胜任 Python 等几乎所有语言的基础开发任务，thanks to 它丰富的插件生态。
+>
 > 所以叫它 IDE 也没毛病。
 
 #### 安装 VS Code
@@ -64,21 +66,13 @@ python3 --version
 >
 > 同时推荐的 Python 相关的拓展组合：
 >
-> - ms-python.autopep8 # 自动格式化代码
-> - ms-python.isort # 自动排序 import 语句
-> - ms-python.vscode-pylance # 静态代码检查
->
-> 以及啥项目都能用的：
->
-> - streetsidesoftware.code-spell-checker # 拼写检查
->
-> 以及，为了更好地在 VS Code 中阅读 Markdown 文件（本教程使用的格式），推荐安装以下拓展
->
-> - DavidAnson.vscode-markdownlint # Markdown 语法检查，可选
+> - `ms-python.autopep8` # 自动格式化代码
+> - `ms-python.isort` # 自动排序 import 语句
+> - `ms-python.vscode-pylance` # 静态代码检查
 >
 > 以及，为了更好地阅读 Jupyter Notebook 文件（.ipynb），推荐安装以下拓展包
 >
-> - ms-toolsai.jupyter # Jupyter Notebook 支持
+> - `ms-toolsai.jupyter` # Jupyter Notebook 支持
 
 ### 配置 Python 解释器（简单）
 
@@ -89,20 +83,21 @@ python3 --version
 
 ### 配置虚拟环境（推荐）
 
-你可能会发现一个问题，如果你直接使用系统的 Python 解释器，可能会遇到权限问题，或者不同项目间的依赖冲突。  
-为了解决这个问题，我们推荐使用虚拟环境（virtual environment），为每一个项目创建一个定制的运行环境，也可以在每个环境中安装每个项目需要的 pip requirements。  
+你可能会发现一个问题，如果你直接使用系统的 Python 解释器，可能会遇到权限问题，或者不同项目间的依赖冲突。
+为了解决这个问题，我们推荐使用虚拟环境（virtual environment），为每一个项目创建一个定制的运行环境，也可以在每个环境中安装每个项目需要的 pip requirements。
 你可以使用 `venv` 模块来创建虚拟环境，VS Code 中具体实现步骤如下：
 
 1. 在右下角点击 Python 版本号，选择 `+ Create Virtual Environment`，然后选 `.venv`。
 2. 选择 Python 解释器（你之前安装的版本）作为基础，VS Code 会自动为你创建并激活虚拟环境。
 
-之后你可以在 VS Code 中打开新的终端时，VS Code 会自动帮你激活你项目根目录下的 `.venv` 包含的环境，此时使用 `pip install` 来安装项目所需的包，这些包只会安装在当前虚拟环境中，不会影响全局 Python 环境。  
+之后你可以在 VS Code 中打开新的终端时，VS Code 会自动帮你激活你项目根目录下的 `.venv` 包含的环境，此时使用 `pip install` 来安装项目所需的包，这些包只会安装在当前虚拟环境中，不会影响全局 Python 环境。
+
 如果你在 VS Code 之外的终端中工作，或者 VS Code 没有正确检测到项目中的 venv 环境，你可能需要手动激活虚拟环境。这部分自己上网搜教程。
 
-然后，你就可以正常打开项目中的 .ipynb 文件，运行里面的代码单元了。  
+然后，你就可以正常打开项目中的 .ipynb 文件，运行里面的代码单元了。
 运行时如果提示没有找到内核（kernel），点击选择内核，选择你刚刚配置的 venv 解释器即可。
 
-## 战队规范 Skill (aim-common-rules)
+## 依然，战队规范 Skill (aim-common-rules)
 
 如果你会使用 AI 编程助手（Claude Code / Cursor / Cline / GitHub Copilot 等，见下节）来写课程代码，推荐安装战队规范 skill `aim-common-rules`。装上之后，AI 助手会在**格式化 Python 代码、排序 import、写 commit message** 等场景自动遵循战队规范（autopep8 + isort、PEP 8、行宽 79），和上面推荐的两款扩展保持同一套标准，帮你省去翻文档的时间。
 

@@ -25,38 +25,38 @@
 #### 啥项目都能用的
 
 - 远程开发
-   - ms-vscode-remote.remote-ssh # 远程 SSH
-   - ms-vscode-remote.remote-containers # 远程容器
-   - ms-vscode.remote-explorer # 远程资源管理器
-   - hnrobert.vscode-ssh-config-all-in-one # SSH 配置管理 (~~夹带私货~~ 可选)
+   - `ms-vscode-remote.remote-ssh` # 远程 SSH
+   - `ms-vscode-remote.remote-containers` # 远程容器
+   - `ms-vscode.remote-explorer` # 远程资源管理器
+   - `hnrobert.vscode-ssh-config-all-in-one` # SSH 配置管理 (~~夹带私货~~ 可选)
 - 报错 inline 显示
-   - usernamehw.errorlens # 报错 inline 显示
+   - `usernamehw.errorlens` # 报错 inline 显示
 - 文件图标
-   - PKief.material-icon-theme # 文件图标主题
+   - `PKief.material-icon-theme` # 文件图标主题
 - Git / GitHub 相关
-   - eamodio.gitlens # Git 增强 / inline 显示
-   - github.vscode-pull-request-github # GitHub PR 管理
+   - `eamodio.gitlens` # Git 增强 / inline 显示
+   - `github.vscode-pull-request-github` # GitHub PR 管理
 - 拼写检查
-   - streetsidesoftware.code-spell-checker # 拼写检查
+   - `streetsidesoftware.code-spell-checker` # 拼写检查
 - 本地路径智能提示
-   - christian-kohler.path-intellisense # 路径补全
+   - `christian-kohler.path-intellisense` # 路径补全
 - 容器相关
-   - ms-azuretools.vscode-containers # 容器工具
+   - `ms-azuretools.vscode-containers` # 容器工具
 - 实时协作
-   - ms-vsliveshare.vsliveshare # 实时协作开发
+   - `ms-vsliveshare.vsliveshare` # 实时协作开发
 
 #### Markdown
 
 为了更好地在 VS Code 中阅读 Markdown 文件（本教程也使用的格式），推荐安装以下拓展
 
-- yzhang.markdown-all-in-one # Markdown 增强，可选
-- DavidAnson.vscode-markdownlint # Markdown 语法检查，可选
+- `yzhang.markdown-all-in-one` # Markdown 增强，可选
+- `DavidAnson.vscode-markdownlint` # Markdown 语法检查，可选
 
 #### Jupyter Notebook
 
 以及，为了更好地阅读 Jupyter Notebook 文件（.ipynb），推荐安装以下拓展包
 
-- ms-toolsai.jupyter # Jupyter Notebook 支持
+- `ms-toolsai.jupyter` # Jupyter Notebook 支持
 
 ## 战队规范 Skill (aim-common-rules)
 
@@ -158,14 +158,5 @@ git pull
 - 如果你在使用 VS Code 的过程中遇到任何问题，可以参考[官方文档](https://code.visualstudio.com/docs)或者在网上搜索相关的解决方案。
 - 如果你对本项目有任何建议或者发现了错误，欢迎在 GitHub 上提出 issue 或者 pull request。
 - 如果你希望参与到本项目的维护中来，也欢迎联系我我们老队员。
-
-## 维护人员名单
-
-- [Robert He](https://github.com/hnrobert)
-- [Xiaoyan Gong](https://github.com/Calc1te)
-- [Animex77](https://github.com/Animex77)
-- [lv_xin](https://github.com/lvxin1024)
-- [HappyDog](https://github.com/HappyDog060713)
-- [AnthonyBvvd](https://github.com/AnthonyBvvd)
 
 祝你食用愉快！
