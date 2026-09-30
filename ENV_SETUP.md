@@ -62,6 +62,15 @@
 
 如果你使用 AI 编程助手（Claude Code / Cursor / Cline 等），推荐安装战队规范 skill `aim-common-rules`。装上之后，AI 助手会在**创建 / 命名仓库、核对 ROS2 包名、新建分支、写 commit message、格式化 Python / C++ 代码**等场景自动遵循 UNNC AIM 战队的规范，帮你节省翻文档的时间。
 
+### 前置：安装 Node.js
+
+`npx` 命令依赖 Node.js 运行时：
+
+- 下载安装：[Node.js 官网](https://nodejs.org/)，选择 **LTS（长期支持）** 版本——Windows 下载 `.msi`、macOS 下载 `.pkg`，安装时全部默认即可（会自动配好 PATH）。
+- 验证安装：命令行执行 `node -v` 和 `npm -v`，能打印出版本号即可。
+
+> macOS 用户建议顺手装好 Xcode Command Line Tools：终端执行 `xcode-select --install`，弹窗确认后等待完成（约几百 MB）。git、Homebrew 等开发工具都依赖它，装一次受益整个学期。
+
 在任意目录执行下面这行即可（`npx skills` 会自动识别并安装到你本地所有 agent —— Claude Code / Cursor / Codex 等）：
 
 ```bash

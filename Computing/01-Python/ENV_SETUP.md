@@ -106,6 +106,8 @@ python3 --version
 
 如果你会使用 AI 编程助手（Claude Code / Cursor / Cline / GitHub Copilot 等，见下节）来写课程代码，推荐安装战队规范 skill `aim-common-rules`。装上之后，AI 助手会在**格式化 Python 代码、排序 import、写 commit message** 等场景自动遵循战队规范（autopep8 + isort、PEP 8、行宽 79），和上面推荐的两款扩展保持同一套标准，帮你省去翻文档的时间。
 
+> 前置：`npx` 依赖 Node.js——从 [Node.js 官网](https://nodejs.org/) 下载 **LTS** 版安装（Windows `.msi` / macOS `.pkg`，默认选项即可），命令行 `node -v` 能出版本号就行；macOS 建议顺手执行 `xcode-select --install` 装好 Xcode Command Line Tools。详细说明见根目录 [ENV_SETUP.md](../../ENV_SETUP.md)。
+
 在任意目录执行下面这行即可（`npx skills` 会自动识别并安装到你本地所有 agent —— Claude Code / Cursor / Codex 等）：
 
 ```bash

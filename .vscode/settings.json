@@ -71,6 +71,7 @@
         "HELLOC",
         "highgui",
         "hlsearch",
+        "hnrobert",
         "HUSTROBOCON",
         "iftop",
         "ignorecase",
@@ -223,6 +224,5 @@
         "Wpedantic",
         "Xiaoyan",
         "yzhang"
-    ],
-    "cmake.sourceDirectory": "/Users/robert/Documents/GitHub/UNNC-AIM/aim-2627-rookie-courses/Computing/03-Cpp"
+    ]
 }
