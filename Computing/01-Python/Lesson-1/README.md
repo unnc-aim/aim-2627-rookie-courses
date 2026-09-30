@@ -50,7 +50,7 @@
 
 - 历史（1989 / Guido van Rossum / Monty Python）与定位
 - 解释型、动态类型、跨平台；课程使用 Python 3.12
-- 在 RoboMaster 战队中的应用场景
+- 在 Robotics 中的应用场景
 
 ### 第一部分：环境配置与认识 Python（30 分钟）
 
@@ -58,7 +58,7 @@
 
 - Python 的历史和特点
 - Python 的应用领域
-- 在 RoboMaster 中的应用场景
+- 在 Robotics 中的应用场景
 
 #### 1.2 开发环境配置
 
