@@ -36,6 +36,7 @@
 
 #### 0.3 命令行
 
+- 命令行的历史：电传打字机、字符终端（VT100）到今天的终端窗口，以及 shell 的概念
 - GUI 与 CLI；程序员为什么离不开命令行
 - 打开 PowerShell / Terminal，会用 `ls`(`dir`)、`cd`、`clear`(`cls`)、`python --version`
 - 衔接 `02-Linux` 课程
