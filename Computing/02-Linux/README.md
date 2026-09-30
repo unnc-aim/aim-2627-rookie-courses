@@ -18,7 +18,7 @@ Linux 基础模块包含 2 个小节，专注于 Linux 操作系统的基础知�
 
 ## 课程使用环境 **（请在课程开始前完成环境配置）**
 
-- 如果没有现成的实体机可以远控，推荐使用 Ubuntu 24.04 LTS 版本的虚拟机，本学年统一使用 VirtualBox（Apple Silicon Mac 通过 Rosetta 2 转译运行，见 macOS 教程）。不推荐在自己常用电脑上安装双系统，以免影响主系统稳定性。
+- 推荐使用 Ubuntu 24.04 LTS 版本的虚拟机，本学年统一使用 VirtualBox（macOS 按 Intel / Apple Silicon 选择对应安装包与镜像，见 macOS 教程）。不推荐在自己常用电脑上安装双系统，以免影响主系统稳定性。
 
 ### 环境配置教程
 
