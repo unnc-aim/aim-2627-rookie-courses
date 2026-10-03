@@ -30,7 +30,7 @@
 
 ```bash
 python --version
-# 或
+# or
 python3 --version
 ```
 
