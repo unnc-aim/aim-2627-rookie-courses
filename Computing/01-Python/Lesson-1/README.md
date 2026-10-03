@@ -19,6 +19,20 @@
 7. 处理简单的输入输出
 8. 编写第一个 Python 程序
 
+## 本课主线
+
+这节课的终点是亲手写出一个人人都能用的**计算器**——但"能用的程序"是由一串更小的需求堆出来的：
+
+| 你会有的需求 | 怎么做 |
+| --- | --- |
+| 明白程序到底怎么跑起来 | 第 0 部分：背景知识 |
+| 跑起来第一行代码 | 需求 1 |
+| 写出别人看得懂的代码 | 需求 2 |
+| 在程序里装下血量、名字、真假 | 需求 3 |
+| 算伤害、比大小、下判断 | 需求 4 |
+| 跟用程序的人对话 | 需求 5 |
+| 把零件全部拼起来 | 需求：计算器 |
+
 ## 课程大纲
 
 ### 第 0 部分：背景知识（60 分钟，今年新增）
@@ -46,19 +60,12 @@
 - 编辑器、IDE 与扩展生态
 - 界面五件套、命令面板 `Ctrl+Shift+P`、集成终端 `` Ctrl+` ``
 
-#### 0.5 Python 本身
+### 需求 1：跑起来第一行代码（30 分钟）
 
-- 历史（1989 / Guido van Rossum / Monty Python）与定位
-- 解释型、动态类型、跨平台；课程使用 Python 3.12
-- 在 Robotics 中的应用场景
+#### 1.1 为什么是 Python
 
-### 第一部分：环境配置与认识 Python（30 分钟）
-
-#### 1.1 Python 简介
-
-- Python 的历史和特点
-- Python 的应用领域
-- 在 Robotics 中的应用场景
+- 出身与定位：Guido van Rossum / Monty Python、解释型动态类型、Python 3.12
+- 在战队：机器人控制原型、视觉上位机、ROS2 脚本、裁判系统数据、自动化测试；之后迁移到 Cpp
 
 #### 1.2 开发环境配置
 
@@ -77,9 +84,9 @@ print("Hello, RoboMaster!")
 - IPython 介绍
 - Jupyter Notebook 基础
 
-### 第二部分：基础语法规则（20 分钟）
+### 需求 2：写出别人看得懂的代码（20 分钟）
 
-#### 2.1 代码风格和规范
+#### 2.1 怎么写才整齐——缩进、注释与 PEP 8
 
 - PEP 8 编码规范
 - 缩进和代码块
@@ -97,15 +104,15 @@ def greet_robot(name):
     print(f"Hello, {name}!")
 ```
 
-#### 2.2 标识符和关键字
+#### 2.2 给东西起名字——标识符和关键字
 
 - 变量命名规则
 - Python 关键字
 - 命名约定
 
-### 第三部分：数据类型详解（40 分钟）
+### 需求 3：在程序里装下机器人世界的信息（40 分钟）
 
-#### 3.1 数字类型
+#### 3.1 记数量：血量与电压——数字类型
 
 ```python
 # 整数
@@ -121,7 +128,7 @@ distance = 3.14159
 complex_num = 3 + 4j
 ```
 
-#### 3.2 字符串类型
+#### 3.2 记文字：名字与状态——字符串类型
 
 ```python
 # 字符串定义
@@ -138,7 +145,7 @@ print(robot_name.lower())
 print(len(team_name))
 ```
 
-#### 3.3 布尔类型
+#### 3.3 记真假：能不能开火——布尔类型
 
 ```python
 is_robot_active = True
@@ -148,7 +155,7 @@ has_ammunition = False
 can_shoot = is_robot_active and has_ammunition
 ```
 
-#### 3.4 类型转换
+#### 3.4 让信息互换格式——类型转换
 
 ```python
 # 显式类型转换
@@ -160,9 +167,9 @@ score_float = float(score_str)
 result = 10 + 3.5  # 结果为浮点数
 ```
 
-### 第四部分：运算符（20 分钟）
+### 需求 4：算伤害、比大小、下判断（20 分钟）
 
-#### 4.1 算术运算符
+#### 4.1 怎么算——算术运算符
 
 ```python
 a = 10
@@ -177,7 +184,7 @@ print(a % b)    # 取余: 1
 print(a ** b)   # 幂运算: 1000
 ```
 
-#### 4.2 比较运算符
+#### 4.2 怎么比——比较运算符
 
 ```python
 x = 5
@@ -191,7 +198,7 @@ print(x <= y)   # True
 print(x >= y)   # False
 ```
 
-#### 4.3 逻辑运算符
+#### 4.3 怎么组合条件——逻辑运算符
 
 ```python
 a = True
@@ -202,9 +209,9 @@ print(a or b)   # True
 print(not a)    # False
 ```
 
-### 第五部分：输入输出（15 分钟）
+### 需求 5：跟用程序的人对话（15 分钟）
 
-#### 5.1 输出函数 print()
+#### 5.1 把结果讲给人听——print()
 
 ```python
 # 基本输出
@@ -221,7 +228,7 @@ print("A", "B", "C", sep="-")  # A-B-C
 print("Loading", end="...")    # 不换行
 ```
 
-#### 5.2 输入函数 input()
+#### 5.2 听人说话——input()
 
 ```python
 # 基本输入
@@ -234,49 +241,27 @@ height = float(input("请输入身高(米): "))
 print(f"你好 {user_name}, 你今年 {age} 岁，身高 {height} 米")
 ```
 
-### 第六部分：实践项目（15 分钟）
+### 终极需求：把零件拼成计算器（15 分钟）
 
-#### 项目：简单计算器
+#### 项目：简单计算器（直算版）
 
-编写一个简单的计算器程序，能够：
-
-1. 接收用户输入的两个数字
-2. 选择运算类型（+、-、\*、/）
-3. 计算并显示结果
-4. 处理基本的错误情况
+用今天攒下的零件——input / float / 算术运算符 / f-string——做出你的第一台计算器：输入两个数，一次算出全部七种运算的结果。
 
 ```python
-def simple_calculator():
-    """简单计算器程序"""
-    print("=== RoboMaster 简单计算器 ===")
+# Lesson-1 直算版：只用已学的零件
+num1 = float(input("请输入第一个数字: "))
+num2 = float(input("请输入第二个数字: "))
 
-    # 获取用户输入
-    num1 = float(input("请输入第一个数字: "))
-    operator = input("请输入运算符 (+, -, *, /): ")
-    num2 = float(input("请输入第二个数字: "))
-
-    # 执行计算
-    if operator == '+':
-        result = num1 + num2
-    elif operator == '-':
-        result = num1 - num2
-    elif operator == '*':
-        result = num1 * num2
-    elif operator == '/':
-        if num2 != 0:
-            result = num1 / num2
-        else:
-            print("错误：除数不能为零！")
-            return
-    else:
-        print("错误：不支持的运算符！")
-        return
-
-    print(f"计算结果: {num1} {operator} {num2} = {result}")
-
-# 运行计算器
-simple_calculator()
+print(f"{num1} + {num2} = {num1 + num2}")
+print(f"{num1} - {num2} = {num1 - num2}")
+print(f"{num1} * {num2} = {num1 * num2}")
+print(f"{num1} / {num2} = {num1 / num2}")
+print(f"{num1} // {num2} = {num1 // num2}")
+print(f"{num1} % {num2} = {num1 % num2}")
+print(f"{num1} ** {num2} = {num1 ** num2}")
 ```
+
+> 想让它只算你选的运算、除零时不崩溃？这需要条件语句和异常处理——Lesson-2 的零件。**课后作业 1** 就是学完 Lesson-2 后回来把它升级成"选运算 + 容错"的版本。
 
 ## 课堂练习
 

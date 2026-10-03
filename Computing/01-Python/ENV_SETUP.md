@@ -87,8 +87,9 @@ python3 --version
 为了解决这个问题，我们推荐使用虚拟环境（virtual environment），为每一个项目创建一个定制的运行环境，也可以在每个环境中安装每个项目需要的 pip requirements。
 你可以使用 `venv` 模块来创建虚拟环境，VS Code 中具体实现步骤如下：
 
-1. 在右下角点击 Python 版本号，选择 `+ Create Virtual Environment`，然后选 `.venv`。
-2. 选择 Python 解释器（你之前安装的版本）作为基础，VS Code 会自动为你创建并激活虚拟环境。
+1. 打开一个 `.py` 文件，在右下角点击 Python 版本号；或者打开一个 `.ipynb` 文件，装好 `ms-toolsai.jupyter` 插件后可以在右上角找到一个可选择 `Kernal` 的按钮，点击进入选择界面，点击 `Python Environments...`
+2. 选择 `+ Create Virtual Environment`，然后选 `.venv`。
+3. 选择 Python 解释器（你之前安装的版本）作为基础，VS Code 会自动为你创建并激活虚拟环境。
 
 之后你可以在 VS Code 中打开新的终端时，VS Code 会自动帮你激活你项目根目录下的 `.venv` 包含的环境，此时使用 `pip install` 来安装项目所需的包，这些包只会安装在当前虚拟环境中，不会影响全局 Python 环境。
 
