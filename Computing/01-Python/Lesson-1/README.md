@@ -60,19 +60,12 @@
 - 编辑器、IDE 与扩展生态
 - 界面五件套、命令面板 `Ctrl+Shift+P`、集成终端 `` Ctrl+` ``
 
-#### 0.5 Python 本身
-
-- 历史（1989 / Guido van Rossum / Monty Python）与定位
-- 解释型、动态类型、跨平台；课程使用 Python 3.12
-- 在 Robotics 中的应用场景
-
 ### 需求 1：跑起来第一行代码（30 分钟）
 
 #### 1.1 为什么是 Python
 
-- Python 的历史和特点
-- Python 的应用领域
-- 在 Robotics 中的应用场景
+- 出身与定位：Guido van Rossum / Monty Python、解释型动态类型、Python 3.12
+- 在战队：机器人控制原型、视觉上位机、ROS2 脚本、裁判系统数据、自动化测试；之后迁移到 Cpp
 
 #### 1.2 开发环境配置
 
