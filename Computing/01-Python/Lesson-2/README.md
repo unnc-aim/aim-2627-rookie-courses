@@ -13,9 +13,8 @@
 1. 熟练使用 Python 内置数据结构（列表、元组、字典、集合）
 2. 掌握条件语句和循环语句的使用
 3. 理解函数的定义和调用
-4. 掌握模块和包的基本概念
-5. 编写更复杂的程序逻辑
-6. 完成学生成绩管理系统项目
+4. 编写更复杂的程序逻辑
+5. 完成学生成绩管理系统项目
 
 ## 本课主线
 
@@ -27,7 +26,6 @@
 | 不同分数给不同评语 | 需求 2：条件 |
 | 对每个人都做一遍同样的统计 | 需求 2：循环 |
 | 同一段逻辑不想抄三遍 | 需求 3：函数 |
-| 代码多了想分文件管理 | 需求 4：模块和包 |
 | 把它们拼成能交互的系统 | 需求：成绩管理系统 |
 
 ## 课程大纲
@@ -290,34 +288,6 @@ def get_game_info():
     return local_info
 ```
 
-### 需求 4：代码多了要分文件——模块和包（10 分钟）
-
-#### 4.1 模块的导入和使用
-
-```python
-# 导入标准库
-import math
-import random
-from datetime import datetime
-
-# 使用模块函数
-distance = math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
-random_choice = random.choice(["Hero", "Infantry", "Engineer"])
-current_time = datetime.now()
-
-# 创建自定义模块 robot_utils.py
-def validate_robot_id(robot_id):
-    """验证机器人ID"""
-    return 1 <= robot_id <= 6
-
-def format_robot_name(robot_type, robot_id):
-    """格式化机器人名称"""
-    return f"{robot_type}-{robot_id}"
-
-# 在主程序中导入
-from robot_utils import validate_robot_id, format_robot_name
-```
-
 ### 终极需求：学生成绩管理系统（20 分钟）
 
 ```python
@@ -490,7 +460,6 @@ if __name__ == "__main__":
 - [ ] 编写复杂的条件判断逻辑
 - [ ] 使用 for 和 while 循环处理数据
 - [ ] 定义和调用带参数的函数
-- [ ] 理解模块的导入和使用
 - [ ] 完成学生成绩管理系统项目
 - [ ] 调试更复杂的程序错误
 
@@ -501,6 +470,7 @@ if __name__ == "__main__":
 - 学习类和对象的概念
 - 掌握继承、封装、多态
 - 异常处理和文件操作
+- 模块、包与项目组织
 - 项目：机器人控制系统模拟器
 
 ## 扩展阅读

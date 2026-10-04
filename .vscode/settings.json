@@ -156,6 +156,7 @@
         "preservim",
         "proc",
         "pstree",
+        "pycache",
         "pygments",
         "pylance",
         "pytest",

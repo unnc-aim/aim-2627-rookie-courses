@@ -2,7 +2,7 @@
 
 ## 课程信息
 
-- **课时**: 2 学时
+- **课时**: 3 学时
 - **难度**: 中级
 - **前置要求**: 完成 Lesson-1 和 Lesson-2
 
@@ -14,9 +14,10 @@
 2. 掌握类和对象的定义与使用
 3. 理解继承、封装、多态三大特性
 4. 掌握异常处理机制
-5. 学会文件操作和数据持久化
-6. 应用程序设计原则和最佳实践
-7. 完成机器人控制系统模拟器项目
+5. 理解模块和包，能组织一个多文件的小项目
+6. 学会文件操作和数据持久化
+7. 应用程序设计原则和最佳实践
+8. 完成机器人控制系统模拟器项目
 
 ## 本课主线
 
@@ -27,8 +28,9 @@
 | 每台机器人的数据和行为打包在一起 | 需求 1：类与对象 |
 | 三种机器人不想把共同逻辑写三遍 | 需求 2：封装 / 继承 / 多态 |
 | 输入错误不能让整个系统崩掉 | 需求 3：异常处理 |
-| 重启之后数据还在 | 需求 4：文件操作 |
-| 系统长大了还改得动 | 需求 5：程序设计原则 |
+| 代码多到一个文件装不下 | 需求 4：模块、包与项目组织 |
+| 重启之后数据还在 | 需求 5：文件操作 |
+| 系统长大了还改得动 | 需求 6：程序设计原则 |
 | 把它们拼成完整的模拟器 | 需求：机器人控制系统模拟器 |
 
 ## 课程大纲
@@ -418,9 +420,67 @@ class InsufficientEnergyException(Exception):
         super().__init__(f"能量不足：需要 {required}，当前 {current}")
 ```
 
-### 需求 4：重启之后数据还在——文件操作（15 分钟）
+### 需求 4：代码多了要分文件——模块、包与项目组织（20 分钟）
 
-#### 4.1 基本文件操作
+#### 4.1 模块、包、项目
+
+- **模块 (module)**：一个 `.py` 文件就是一个模块，文件名就是模块名
+- **包 (package)**：一个带 `__init__.py` 的文件夹，把相关模块打包在一起
+- **项目 (project)**：按职责组织好的模块和包，再加一个入口脚本
+
+```text
+（项目根目录）
+├── main.py            # 入口：python main.py
+├── battle/            # 包：战斗逻辑
+│   ├── __init__.py
+│   ├── robots.py      # 机器人定义
+│   └── combat.py      # 战斗流程
+├── data/              # 数据文件
+└── requirements.txt   # 第三方依赖清单
+```
+
+组织原则：**一个模块只干一类事**。Lecture 中会用 `%%writefile` 亲手搭出这个最小项目并运行。
+
+#### 4.2 import 的四种写法
+
+```python
+import battle.robots                      # 1. 完整路径，用时写全名
+import battle.robots as br                # 2. 起别名（惯例如 import numpy as np）
+from battle import HeroRobot              # 3. 从包导入（靠 __init__.py re-export）
+from battle.robots import HeroRobot       # 4. 从模块精确导入成员
+```
+
+#### 4.3 入口守卫：`if __name__ == "__main__"`
+
+```python
+# main.py
+from battle import HeroRobot, InfantryRobot
+from battle.combat import battle_round
+
+
+def main():
+    hero = HeroRobot("Hero-Alpha")
+    infantry = InfantryRobot("Infantry-Beta")
+    battle_round(hero, infantry)
+
+
+if __name__ == "__main__":   # 直接运行才成立；被 import 时不成立
+    main()
+```
+
+#### 4.4 标准库、第三方库与虚拟环境
+
+```bash
+pip install numpy                 # 安装第三方库
+pip freeze > requirements.txt     # 把依赖清单存进项目
+pip install -r requirements.txt   # 别人拿到项目后一键装齐依赖
+```
+
+import 的对象分三类：标准库（`math`、`random`、`json` 自带）、第三方库（`pip install` 后可用）、自己写的模块（项目目录里直接 import）。每个项目配一个虚拟环境（venv）避免依赖冲突，创建步骤见[环境配置指南](../ENV_SETUP.md)。
+
+### 需求 5：重启之后数据还在——文件操作（15 分钟）
+
+#### 5.1 基本文件操作
 
 ```python
 import json
@@ -495,9 +555,9 @@ class RobotDataManager:
             print(f"保存日志失败: {e}")
 ```
 
-### 需求 5：系统长大了还改得动——程序设计原则（10 分钟）
+### 需求 6：系统长大了还改得动——程序设计原则（10 分钟）
 
-#### 5.1 SOLID 原则简介
+#### 6.1 SOLID 原则简介
 
 ```python
 # 单一责任原则 (Single Responsibility Principle)
@@ -848,6 +908,7 @@ if __name__ == "__main__":
 - [ ] 熟练定义和使用类与对象
 - [ ] 掌握继承、封装、多态的实现
 - [ ] 正确处理程序异常和错误
+- [ ] 理解模块和包，能组织一个多文件的小项目
 - [ ] 进行文件读写和数据持久化
 - [ ] 应用基本的程序设计原则
 - [ ] 完成机器人控制系统模拟器项目
