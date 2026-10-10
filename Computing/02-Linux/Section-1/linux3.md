@@ -51,6 +51,52 @@ animex@LAPTOP-6966S4BS:~/linux_example$
 >
 > 在没有 Option 的情况下，系统会认为你希望在`workspace`文件目录中再创建一个新的目录，而不是创建一个带有一个二级目录的目录。
 
+## 复制与移动文件：cp，mv
+
+除了创建和删除文件之外，我们还经常需要复制、移动或重命名文件和目录。`cp` 用于复制，`mv` 用于移动；当目标路径仍然在当前目录时，`mv` 也可以用来重命名。
+
+`cp` 的使用方式为：
+
+```bash
+cp [Option] {Source} {Destination}
+```
+
+`mv` 的使用方式类似：
+
+```bash
+mv [Option] {Source} {Destination}
+```
+
+例如：
+
+```bash
+cp file1 file2 # 复制文件
+cp -r dir1 dir2 # 复制目录，需要使用 -r
+mv file1 /tmp/ # 移动文件到其他目录
+mv old_name.txt new_name.txt # 重命名文件（移动到相同目录不同名字 = 重命名）
+```
+
+也可以使用绝对路径或相对路径：
+
+```bash
+cp /home/animex/readme.md /home/animex/workspace/
+mv ./workspace/readme.md ./workspace/README.md
+```
+
+- `cp` — copy，复制文件或目录
+- `mv` — move，移动文件或目录，也可以重命名
+- `-r` — 递归复制目录
+- `-i` — 覆盖目标文件前进行确认
+
+覆盖文件前建议先确认目标路径；如果不确定，可以使用 `-i` 进行确认
+
+```bash
+cp -i file1 file2
+mv -i file1 file2
+```
+
+> ！`cp` 和 `mv` 都不会把文件放入回收站，操作前请确认源路径和目标路径
+
 ## 删除文件：rm
 
 > 这是一个极度危险的命令。对于 Linux 而言，Linux 会假定任何一个使用 rm 命令的人足够聪明而不会因为使用这条命令导致系统崩溃。

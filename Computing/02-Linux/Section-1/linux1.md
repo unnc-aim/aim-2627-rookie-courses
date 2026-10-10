@@ -26,7 +26,7 @@ Alt+Ctrl+F1~F6
 [User]@[Computer name]:[Directory]$
 ```
 
-例如，在我的 WSL 启动后，就应当看到这样的显示内容：
+例如，在我的终端启动后，就应当看到这样的显示内容：
 
 ```bash
 animex@LAPTOP-6966S4BS:~$
