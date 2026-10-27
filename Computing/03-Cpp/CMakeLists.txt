@@ -18,15 +18,20 @@ endif()
 
 # --- 添加可执行文件 ---
 # executable意为“可执行的”，my_first_cplus是生成的可执行文件名
-# Lesson 01这个目录名有空格，所以用引号括起来
+# 保留往届示例，目录命名与 Python 课程统一。
 add_executable(my_first_cplus
-        "Lesson 01/my_first_cplus.cpp"
-        "Lesson 01/stupid_namespace.cpp"
-        "Lesson 01/stupid_namespace.h"
+        "Lesson-1/my_first_cplus.cpp"
+        "Lesson-1/stupid_namespace.cpp"
+        "Lesson-1/stupid_namespace.h"
 )
 
 # 添加新的可执行文件
 add_executable(my_second_cplus
-        "Lesson 02/my_second_cpp.cpp"
+        "Lesson-2/my_second_cpp.cpp"
 )
+
+# 本学年讲义配套的完整单文件综合演示。
+# Examples 中每个程序各有 main，不能合并到同一个目标。
+add_executable(lesson_1_demo "Lesson-1/Demo.cpp")
+add_executable(lesson_2_demo "Lesson-2/Demo.cpp")
 

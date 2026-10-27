@@ -1,0 +1,570 @@
+/* @theme aim */
+
+/*
+ * AIM Robotics Marp theme
+ * Brand: ink #111 / white / gray — pure monochrome Swiss poster style with
+ * dashed guides, black tag blocks and outlined display words.
+ *
+ * Slide classes: lead | agenda | roster | side | ink | activities | todo
+ * See README.md for the Markdown shape of each class.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Sans+SC:wght@400;500;700;900&display=swap');
+
+:root {
+  --ink: #111111;
+  --ink-soft: #444444;
+  --gray: #8c8c8c;
+  --grid: #d9d9d9;
+  --stripe: #f2f2f2;
+  --sans: 'Noto Sans SC', 'PingFang SC', 'Hiragino Sans', 'Microsoft YaHei', sans-serif;
+  --display: 'Archivo Black', 'Arial Black', 'Noto Sans SC', sans-serif;
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+}
+
+/* ---------- base slide ---------- */
+
+section {
+  width: 1280px;
+  height: 720px;
+  box-sizing: border-box;
+  position: relative;
+  padding: 64px 84px 70px;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+/* blueprint margin guides */
+section::before {
+  content: '';
+  position: absolute;
+  top: 30px;
+  bottom: 30px;
+  left: 60px;
+  right: 60px;
+  border-left: 2px dashed var(--grid);
+  border-right: 2px dashed var(--grid);
+  pointer-events: none;
+}
+
+/* page number */
+section::after {
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+  position: absolute;
+  right: 76px;
+  bottom: 32px;
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--gray);
+}
+
+h1 {
+  margin: 0.4em 0 0.2em;
+  font-size: 1.5em;
+}
+
+p {
+  margin: 0.6em 0;
+}
+
+ol {
+  margin: 10px 0;
+  padding-left: 2em;
+}
+
+blockquote {
+  margin: 10px 0;
+  padding: 4px 16px;
+  border-left: 6px solid var(--ink);
+  color: var(--gray);
+}
+
+strong {
+  font-weight: 800;
+  color: var(--ink);
+}
+
+em {
+  font-style: normal;
+  color: var(--gray);
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.8em;
+  font-weight: 700;
+  color: var(--ink-soft);
+  background: var(--stripe);
+  padding: 1px 8px;
+  border-radius: 3px;
+}
+
+/* ---------- content slide header ---------- */
+
+h2 {
+  position: relative;
+  margin: 0 0 10px;
+  padding: 0 120px 14px 0;
+  border-bottom: 2px dashed var(--grid);
+  color: var(--ink);
+  font-weight: 900;
+  font-size: 40px;
+  line-height: 1.25;
+}
+
+/* brand glyph, top-right — dark logo embedded as a data URI (3x of assets/logo-dark.png,
+   regenerate: sips -Z 228 assets/logo-dark.png --out /tmp/l.png && base64 -i /tmp/l.png) */
+h2::after {
+  content: '';
+  position: absolute;
+  right: 2px;
+  top: 6px;
+  width: 76px;
+  height: 33px;
+  background: url('data:image/png;base64,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') no-repeat right center / contain;
+}
+
+h3 {
+  display: inline-block;
+  margin: 24px 0 8px;
+  padding: 2px 16px 4px;
+  background: var(--ink);
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+
+h2 + h3 {
+  margin-top: 26px;
+}
+
+/* ---------- lists: ink square markers ---------- */
+
+ul {
+  list-style: none;
+  margin: 10px 0;
+  padding: 0;
+}
+
+ul li {
+  position: relative;
+  padding-left: 30px;
+  margin: 12px 0;
+}
+
+ul li::before {
+  content: '';
+  position: absolute;
+  left: 2px;
+  top: 0.56em;
+  width: 13px;
+  height: 13px;
+  background: var(--ink);
+}
+
+ul ul {
+  margin: 4px 0 2px;
+}
+
+ul ul li {
+  margin: 6px 0;
+}
+
+ul ul li::before {
+  top: 0.6em;
+  width: 9px;
+  height: 9px;
+  background: var(--grid);
+}
+
+/* ---------- tables ---------- */
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 16px 0 8px;
+  font-size: 21px;
+}
+
+th {
+  background: var(--ink);
+  color: #ffffff;
+  font-weight: 900;
+  border: 2.5px solid var(--ink);
+  padding: 9px 16px;
+  text-align: left;
+}
+
+td {
+  border: 2.5px solid var(--ink);
+  padding: 8px 16px;
+  background: #ffffff;
+}
+
+tr:nth-child(even) td {
+  background: var(--stripe);
+}
+
+/* ---------- roster table (name | role | duties) ---------- */
+
+section.roster table {
+  font-size: 18px;
+  table-layout: fixed;
+}
+
+section.roster th:first-child,
+section.roster td:first-child {
+  width: 350px;
+}
+
+section.roster th {
+  padding: 7px 14px;
+}
+
+section.roster td {
+  padding: 7px 14px;
+}
+
+/* ---------- side-image slide ---------- */
+/*
+ * Layout only — the image itself is a pure right-side background set with a
+ * scoped <style> on the slide (see template.md / README.md):
+ *
+ *   section {
+ *     --side-gap: 540px;    (= image width + margin; 360px for narrow images)
+ *     background: #ffffff url('assets/poster.png') no-repeat right center / auto 100%;
+ *   }
+ *
+ * h3 tag blocks distribute evenly; h4 is the outlined mega word, bottom-left.
+ */
+
+section.side {
+  display: flex;
+  flex-direction: column;
+  padding-right: var(--side-gap, 540px);
+  padding-bottom: 200px;
+}
+
+section.side h2 {
+  font-size: 34px;
+}
+
+section.side h3 {
+  font-size: 30px;
+  margin-top: auto;
+}
+
+section.side h3 + p {
+  font-size: 24px;
+  margin: 10px 0 0;
+}
+
+section.side h4 {
+  position: absolute;
+  left: 84px;
+  bottom: 44px;
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 92px;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 3px var(--ink);
+  pointer-events: none;
+}
+
+/* ---------- tag-block slide (todo etc.) ---------- */
+
+section.todo {
+  display: flex;
+  flex-direction: column;
+}
+
+section.todo h3 {
+  margin-top: auto;
+}
+
+/* ---------- title slide ---------- */
+
+section.lead {
+  padding-top: 268px;
+}
+
+/* ink banner */
+section.lead::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 196px;
+  background: var(--ink);
+  border: none;
+}
+
+/* subtitle, bottom edge of the banner — carried by h2 because Marpit
+   reserves section::after for pagination and strips its content */
+section.lead h2 {
+  position: absolute;
+  top: 142px;
+  left: 84px;
+  right: 84px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 21px;
+}
+
+/* org name, top-right of the banner. A deck can replace this with the white
+   logo via a scoped style (set content: none here, paint the logo onto
+   section.lead::before) — see template.md */
+section.lead h2::after {
+  content: 'AIM Robotics';
+  position: absolute;
+  top: -74px;
+  right: 0;
+  white-space: pre;
+  text-align: right;
+  color: #ffffff;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 20px;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+}
+
+section.lead h1 {
+  position: absolute;
+  top: 32px;
+  left: 84px;
+  right: 470px;
+  margin: 0;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 44px;
+  line-height: 1.22;
+}
+
+section.lead p {
+  margin: 0 0 12px;
+  font-weight: 700;
+  font-size: 23px;
+}
+
+section.lead p + p {
+  margin-top: 2px;
+  font-weight: 500;
+  font-size: 17px;
+  color: var(--gray);
+}
+
+/* mega display words, bottom-right: h3 outlined, h4 solid */
+section.lead h3,
+section.lead h4 {
+  position: absolute;
+  right: 84px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: none;
+  font-family: var(--display);
+  font-weight: 400;
+  line-height: 0.96;
+  pointer-events: none;
+}
+
+section.lead h3 {
+  bottom: 150px;
+  font-size: 100px;
+  color: transparent;
+  -webkit-text-stroke: 3.5px var(--ink);
+}
+
+section.lead h4 {
+  bottom: 46px;
+  font-size: 80px;
+  color: var(--ink);
+}
+
+/* ---------- agenda slide ---------- */
+
+section.agenda ol {
+  list-style: none;
+  counter-reset: item;
+  margin: 34px 0 0;
+  padding: 0;
+}
+
+section.agenda ol li {
+  counter-increment: item;
+  position: relative;
+  display: block;
+  padding: 24px 16px 24px 128px;
+  margin: 0;
+  border-bottom: 2px dashed var(--grid);
+  font-weight: 900;
+  font-size: 30px;
+  line-height: 1.35;
+}
+
+section.agenda ol li::before {
+  content: '0' counter(item);
+  position: absolute;
+  left: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 54px;
+  line-height: 1;
+  color: var(--grid);
+}
+
+section.agenda ol li:first-child {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+section.agenda ol li:first-child::before {
+  color: #ffffff;
+}
+
+section.agenda ol li:first-child em {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------- grouped timeline slide ---------- */
+
+section.activities {
+  font-size: 20px;
+}
+
+section.activities h3 {
+  margin: 14px 0 6px;
+}
+
+section.activities ul {
+  margin: 4px 0;
+}
+
+section.activities ul li {
+  margin: 8px 0;
+}
+
+/* ---------- ink section divider ---------- */
+
+section.ink {
+  background: var(--ink);
+}
+
+section.ink::before {
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* divider page number: white on ink — must repeat the pagination content
+   (a content-less section::after rule breaks Marpit's page-number printer) */
+section.ink::after {
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* no page number on the title slide (would collide with the mega word);
+   transparent, never content-less — see the note above */
+section.lead::after {
+  content: attr(data-marpit-pagination) ' / ' attr(data-marpit-pagination-total);
+  color: transparent;
+}
+
+section.ink h2 {
+  position: absolute;
+  top: 46px;
+  right: 84px;
+  left: auto;
+  margin: 0;
+  padding: 0;
+  border: none;
+  color: transparent;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 96px;
+  line-height: 1;
+  -webkit-text-stroke: 3px #ffffff;
+}
+
+section.ink h2::after {
+  content: none;
+}
+
+section.ink h3 {
+  position: absolute;
+  top: 172px;
+  left: 84px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: transparent;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 96px;
+  line-height: 1;
+  -webkit-text-stroke: 2.5px var(--gray);
+}
+
+section.ink h4 {
+  position: absolute;
+  top: 352px;
+  left: 84px;
+  display: block;
+  margin: 0;
+  padding: 0;
+  background: none;
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 88px;
+  line-height: 1.15;
+}
+
+section.ink p {
+  position: absolute;
+  left: 84px;
+  bottom: 84px;
+  margin: 0;
+  color: var(--gray);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* C++ 教学扩展：保留 AIM 模板，补充代码块与密集例题的排版。 */
+pre {
+  margin: 12px 0;
+  padding: 14px 18px;
+  background: #f2f2f2;
+  border-left: 4px solid var(--ink);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.32;
+}
+pre code {
+  display: block;
+  font-size: 19px;
+  font-weight: 500;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  white-space: pre-wrap;
+}
+section:not(.lead):not(.ink):not(.agenda) p { margin: 10px 0; }
+section:not(.lead):not(.ink):not(.agenda) h2 { font-size: 36px; }
