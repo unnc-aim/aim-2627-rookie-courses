@@ -1,6 +1,6 @@
 # O35 A polymorphic collection
 
-Lesson 2 · Chapter 09 · Original-course integration and engineering extensions
+Lesson 2 · Section 2.8
 
 ## Problem
 

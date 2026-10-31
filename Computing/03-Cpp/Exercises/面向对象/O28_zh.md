@@ -1,6 +1,6 @@
 # O28 protected 的可见性
 
-Lesson 2 · Chapter 08 · protected、this 与第二层派生
+第 2 课 · 2.6 · 继承：派生对象中的基类部分
 
 ## 题目
 

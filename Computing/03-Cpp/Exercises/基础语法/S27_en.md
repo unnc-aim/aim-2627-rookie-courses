@@ -1,6 +1,6 @@
 # S27 Skip and stop
 
-Lesson 1 · Chapter 05 · Conditions and for loops
+Lesson 1 · Section 1.4
 
 ## Problem
 

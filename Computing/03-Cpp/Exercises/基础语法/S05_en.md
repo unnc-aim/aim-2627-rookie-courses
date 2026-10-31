@@ -1,6 +1,6 @@
 # S05 Read a line after a number
 
-Lesson 1 · Chapter 03 · Input, variables, and output formatting
+Lesson 1 · Section 1.6
 
 ## Problem
 

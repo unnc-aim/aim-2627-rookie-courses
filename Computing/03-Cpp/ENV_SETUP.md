@@ -26,7 +26,7 @@
 
 [CLion 中文指南](./Setup/CLion本地环境配置_zh.md) · [中文 PDF](./Setup/CLion本地环境配置_zh.pdf) · [English guide](./Setup/CLion本地环境配置_en.md) · [English PDF](./Setup/CLion本地环境配置_en.pdf)
 
-Linux/Ubuntu 使用 CLion 的同学可以继续使用 Linux 课程环境，执行 `sudo apt update`、`sudo apt install build-essential gdb cmake` 安装工具链，再用 CLion 打开本模块的 CMake 项目。其他构建方式见模块 README。
+Linux/Ubuntu 使用 CLion 的同学可以继续使用 Linux 课程环境，执行 `sudo apt update`、`sudo apt install build-essential gdb cmake` 安装工具链，再用 CLion 打开 [CMake 本地演示](./Lesson-1/CMakeIntro/README.md) 所在目录。
 
 完整离线 PDF 依次包含本页、VSCode 指南和 CLion 指南。
 

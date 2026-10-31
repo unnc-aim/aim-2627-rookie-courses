@@ -1,6 +1,6 @@
 # S34 数组最大值
 
-Lesson 1 · Chapter 06 · 数组、std::array 与范围遍历
+第 1 课 · 1.5 · Python 的 list 到了 C++，该用什么？
 
 ## 题目
 

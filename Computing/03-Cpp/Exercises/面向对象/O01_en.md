@@ -1,6 +1,6 @@
 # O01 A first class
 
-Lesson 2 · Chapter 04 · From struct to the Band class
+Lesson 2 · Section 2.1
 
 ## Problem
 

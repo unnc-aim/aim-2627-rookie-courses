@@ -1,6 +1,6 @@
 # S64 A non-owning pointer range
 
-Lesson 2 · Chapter 02 · References, addresses, and pointers
+Lesson 1 · Section 1.10
 
 ## Problem
 

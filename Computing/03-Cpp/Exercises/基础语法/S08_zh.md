@@ -1,6 +1,6 @@
 # S08 故障分层
 
-Lesson 1 · Chapter 01 · 从 Python 进入 C++ 程序
+第 1 课 · 1.1 · Python 和 C++ 的程序分别怎样跑起来？
 
 ## 题目
 

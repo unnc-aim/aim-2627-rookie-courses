@@ -1,6 +1,6 @@
 # O13 Return a reference for chaining
 
-Lesson 2 · Chapter 06 · Instances, methods, and a collection of bands
+Lesson 2 · Section 2.3
 
 ## Problem
 

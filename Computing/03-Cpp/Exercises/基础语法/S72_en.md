@@ -1,6 +1,6 @@
 # S72 Sorting with tie-breaking
 
-Lesson 1 · Chapter 08 · Lesson 1 integration and a preview of structures
+Lesson 1 · Section 1.11
 
 ## Problem
 

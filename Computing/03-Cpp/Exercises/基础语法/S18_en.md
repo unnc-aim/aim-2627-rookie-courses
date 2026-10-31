@@ -1,6 +1,6 @@
 # S18 Closed-interval membership
 
-Lesson 1 · Chapter 05 · Conditions and for loops
+Lesson 1 · Section 1.3
 
 ## Problem
 

@@ -1,6 +1,6 @@
 # S29 Enumerate factors
 
-Lesson 1 · Chapter 05 · Conditions and for loops
+Lesson 1 · Section 1.4
 
 ## Problem
 

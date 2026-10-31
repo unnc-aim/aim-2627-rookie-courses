@@ -1,6 +1,6 @@
 # S62 Read-only reference traversal
 
-Lesson 2 · Chapter 02 · References, addresses, and pointers
+Lesson 1 · Section 1.9
 
 ## Problem
 

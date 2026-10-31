@@ -1,6 +1,6 @@
 # O30 Name hiding and qualification
 
-Lesson 2 · Chapter 07 · MofoBand: inheritance and base construction
+Lesson 2 · Section 2.6
 
 ## Problem
 

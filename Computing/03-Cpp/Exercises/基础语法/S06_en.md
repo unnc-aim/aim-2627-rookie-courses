@@ -1,6 +1,6 @@
 # S06 Detect failed input
 
-Lesson 1 · Chapter 03 · Input, variables, and output formatting
+Lesson 1 · Section 1.3
 
 ## Problem
 

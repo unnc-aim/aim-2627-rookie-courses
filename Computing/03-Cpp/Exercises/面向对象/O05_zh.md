@@ -1,6 +1,6 @@
 # O05 struct 与 class
 
-Lesson 2 · Chapter 04 · 从 struct 到 Band 类
+第 2 课 · 2.1 · 从一份记录到一个会做事的对象
 
 ## 题目
 

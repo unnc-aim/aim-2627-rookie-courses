@@ -1,6 +1,6 @@
 # S08 Identify failure stages
 
-Lesson 1 · Chapter 01 · From Python to a C++ program
+Lesson 1 · Section 1.1
 
 ## Problem
 

@@ -1,6 +1,6 @@
 # S58 Swap through references
 
-Lesson 2 · Chapter 03 · Understanding parameter passing through swapping
+Lesson 1 · Section 1.9
 
 ## Problem
 

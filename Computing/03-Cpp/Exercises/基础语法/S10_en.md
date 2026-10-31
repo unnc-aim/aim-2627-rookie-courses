@@ -1,6 +1,6 @@
 # S10 Split a duration
 
-Lesson 1 · Chapter 04 · Evaluating operators step by step
+Lesson 1 · Section 1.2
 
 ## Problem
 

@@ -1,6 +1,6 @@
 # S77 Grid collisions
 
-Lesson 1 · Chapter 08 · Lesson 1 integration and a preview of structures
+Lesson 1 · Section 1.6
 
 ## Problem
 

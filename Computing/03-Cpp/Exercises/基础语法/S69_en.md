@@ -1,6 +1,6 @@
 # S69 Update a 2D position
 
-Lesson 1 · Chapter 08 · Lesson 1 integration and a preview of structures
+Lesson 1 · Section 1.6
 
 ## Problem
 

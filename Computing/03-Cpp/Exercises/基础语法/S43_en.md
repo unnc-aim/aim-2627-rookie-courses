@@ -1,6 +1,6 @@
 # S43 Replace the first match safely
 
-Lesson 1 · Chapter 07 · Searching, replacing, inserting, and erasing strings
+Lesson 1 · Section 1.6
 
 ## Problem
 

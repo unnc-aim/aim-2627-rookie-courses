@@ -1,6 +1,6 @@
 # O26 public 继承
 
-Lesson 2 · Chapter 07 · MofoBand：继承与基类构造
+第 2 课 · 2.6 · 继承：派生对象中的基类部分
 
 ## 题目
 

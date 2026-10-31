@@ -1,6 +1,6 @@
 # S38 Adjacent differences
 
-Lesson 1 · Chapter 06 · Arrays, std::array, and range iteration
+Lesson 1 · Section 1.5
 
 ## Problem
 

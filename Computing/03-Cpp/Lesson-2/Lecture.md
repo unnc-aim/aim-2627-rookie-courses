@@ -1,1332 +1,1923 @@
-# 第二课-函数与面向对象
+# 第2课：C++ 面向对象与资源管理
 
-本课程以 C++17 为语言上限。教学代码使用显式类型，标量采用等号初始化，普通对象采用圆括号构造；数组和聚合数据采用等号后的初始化列表。
+第二课 · O01–O40
 
-这是一份可连续阅读的完整讲义。正文按去年仓库的演示顺序展开；每个实验包括概念推导、完整单文件程序、状态分析、错误定位及带答案的自检。配套题库另有 120 道独立例题，函数与指针练习随原第二课归位。
+承接第一课的值、函数、引用和指针知识。逐步建立对象创建、接口、生命周期、多态与资源管理的完整模型。
 
-运行平台为 CPP-Classroom，选择 C++17，整份粘贴一个 .cpp 后运行。平台只运行程序，不内置本课程的自动判题。所有可变输入在题目左侧预填，或运行时按行发送；读到流结束的程序需要发送 EOF。
+## 2.1 类、对象与封装
 
-Original repository: [unnc-aim/aim-2526-rookie-courses](https://github.com/unnc-aim/aim-2526-rookie-courses/tree/4c0db2a8ae6b665f5082d4e8b15ae20f17f8084b/Contents/Cpp)
+第一课的结构体把字段组织在一起。本课进一步把操作也放进类型，让每个对象维护自己的状态和使用规则。
 
-## 章节目录
+本节题号：O01、O02、O03、O04、O05
 
-- 01. 函数：输入、计算与返回
+### 先建立对象模型
 
-- 02. 引用、地址与指针
-
-- 03. 用交换实验理解参数传递
-
-- 04. 从 struct 到 Band 类
-
-- 05. Band 的构造与初始化
-
-- 06. 实例、方法与乐队集合
-
-- 07. MofoBand：继承与基类构造
-
-- 08. protected、this 与第二层派生
-
-- 09. 原课程整合与工程拓展
-
-## 01 函数：输入、计算与返回
-
-**原稿定位:** test_add，保持原第二课起点
-
-### 1.1 从 test_add 读懂函数接口
-
-第二课沿用原稿的 test_add 开场，而不是先从继承或资源管理讲起。int test_add(int a,int b) 把接口完整写出：它接收两个 int 参数，返回一个 int。调用 test_add(1,2) 时，实参 1 与 2 用来初始化形参 a 与 b，函数体在自己的作用域中运行。
-
-原函数在内部打印一条演示提示，再计算 sum 并 return。提示输出和返回值是两条不同的信息通道：cout 面向屏幕，return 面向调用者。不能通过“函数已经打印出 3”推断调用表达式一定返回 3。把 return 删除或误写成输出，会改变接口行为。
-
-调用者可以把返回值赋给变量，也可以继续参与更大的表达式。函数里的局部 sum 在返回后结束生命周期，但它的整数值已被交给调用者。返回基本数值不要求把局部变量变成全局变量。
-
-#### 完整课堂实验
-
-`L2_C01_D01.cpp` · [CPP-Classroom source](Examples/L2_C01_D01.cpp)
+类型说明一类数据有哪些成员，以及可以进行哪些操作。对象是这个类型的一份具体实例。即使两个对象属于同一个类型，它们的普通数据成员也分别保存状态。对某个对象调用成员函数时，函数操作的是这个对象的成员，而不会自动修改所有同类型对象。Python 是否学过类不影响理解这里的模型，只需要接上第一课的记录与函数。
 
 ```cpp
-#include <iostream>
-
-int test_add(int a, int b) {
-    int sum = a + b;
-    return sum;
-}
-
-int main() {
-    int result = test_add(1, 2);
-    std::cout << result << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-进入函数后 a=1、b=2、sum=3；return 把 3 交给调用点，result 得到 3，最后输出 3。
-
-#### 常见错误及原因
-
-返回类型为 int 的普通函数应在需要返回结果的路径上提供匹配的值。不要把 main 末尾的特殊规则推广到所有函数。
-
-#### 自检
-
-std::cout << test_add(2,3) 会先得到什么值再输出？
-
-**参考解释：** 调用先产生整数返回值 5，再由外层输出流输出；函数自己的提示若存在也会执行。
-
-### 1.2 声明、定义与 void
-
-编译器在调用处需要知道函数的声明。把定义放在 main 前面是入门示例最直接的组织方式；若定义写在后面，就在前面先放声明。声明以分号结束，定义提供大括号内的实现。名字、参数与返回类型必须匹配，不能靠“看起来差不多”完成链接。
-
-void 表示不返回一个结果值，不表示函数什么都不做。原 cite_pointer、swap1、swap2 和 print_info 都通过输出或修改对象产生作用，所以适合讨论副作用。一个函数可以没有参数，也可以既有参数又没有返回值；接口要按职责选择。
-
-CPP-Classroom 的本课程序保持单文件：把声明、定义和 main 放在同一份源码里。原仓库的头文件与 cpp 分离保留为工程组织说明，但不要求学生在尚不支持多文件工程的平台上创建多个编译单元。
-
-#### 完整课堂实验
-
-`L2_C01_D02.cpp` · [CPP-Classroom source](Examples/L2_C01_D02.cpp)
-
-```cpp
-#include <iostream>
-
-int test_add(int a, int b) { return a + b; }
-void print_sum(int a, int b) { std::cout << test_add(a, b) << '\n'; }
-
-int main() {
-    print_sum(4, 5);
-    return 0;
-}
-```
-
-#### 执行推导
-
-print_sum 接收两个整数，在内部调用 test_add，再输出结果。调用者没有接收返回值，因为 print_sum 的返回类型是 void。
-
-#### 常见错误及原因
-
-只有声明而没有对应实现，可能通过语法检查却在链接时失败；这与参数类型根本不匹配的编译错误不同。
-
-#### 自检
-
-void 函数能否写 return; 提前结束？
-
-**参考解释：** 可以，不携带返回值的 return 结束该次调用。
-
-### 本章配套例题
-
-| ID | 题目 |
-| --- | --- |
-| S49 | [返回值与参数](../Exercises/基础语法/S49_zh.md) |
-| S50 | [声明与定义](../Exercises/基础语法/S50_zh.md) |
-| S51 | [速度限幅函数](../Exercises/基础语法/S51_zh.md) |
-| S52 | [默认参数](../Exercises/基础语法/S52_zh.md) |
-| S53 | [函数重载](../Exercises/基础语法/S53_zh.md) |
-| S54 | [局部作用域](../Exercises/基础语法/S54_zh.md) |
-| S55 | [递归阶乘](../Exercises/基础语法/S55_zh.md) |
-| S56 | [布尔结果与输出参数](../Exercises/基础语法/S56_zh.md) |
-
-## 02 引用、地址与指针
-
-**原稿定位:** cite_pointer：保留 band1/live1/anime1
-
-### 2.1 引用是已有对象的别名
-
-原 cite_pointer 定义 string band1="poppin party"，然后 string& live1=band1。live1 不是复制出来的第二份字符串，而是访问同一个字符串对象的另一个名字。通过 live1 写入，会改变之后通过 band1 读到的内容。
-
-引用通常在声明时绑定目标，之后不会因为赋值而改绑。写 live1=another 的意思是把 another 的值赋给当前绑定的字符串，不是让 live1 从此指向另一个对象。这个区别会直接影响 swap 的实现和对象参数传递。
-
-原程序打印 &band1 与 &live1，目的是验证两个名字关联同一对象。真实地址因运行而异，不能把某次十六进制地址抄成固定样例答案。课堂用 &band1==&live1 的布尔结果做稳定验证，同时保留讲师可选的地址观察。
-
-#### 完整课堂实验
-
-`L2_C02_D01.cpp` · [CPP-Classroom source](Examples/L2_C02_D01.cpp)
-
-```cpp
-#include <iostream>
-#include <string>
-
-int main() {
-    std::string band1 = "poppin party";
-    std::string &live1 = band1;
-    live1 = "afterglow";
-    std::cout << band1 << '\n';
-    std::cout << std::boolalpha << (&band1 == &live1) << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-输出 afterglow 和 true。同一个字符串对象被更新一次，不存在另一份需要同步的 live1 字符串。
-
-#### 常见错误及原因
-
-把 std::string& 改成 std::string 就会创建副本，之后的赋值不再修改 band1。
-
-#### 自检
-
-去掉声明中的 &，输出的 band1 还会变成 afterglow 吗？
-
-**参考解释：** 不会。live1 成为独立副本，band1 仍为 poppin party。
-
-### 2.2 指针变量与解引用
-
-原稿先把 `string*` anime1 初始化为 nullptr，再令 anime1=&band1。指针是一个保存地址值的对象；&band1 取得 band1 的地址，赋给 anime1 后，指针知道要关联哪个字符串。注意类型是 `string*`，与字符串本身的 string 不同。
-
-在表达式中 `*anime1` 表示解引用，即访问指针所指对象。std::cout<<anime1 输出地址表示，std::cout<<`*anime1` 输出字符串内容。声明中的 `*` 与表达式中的 `*` 位置不同、职责不同；不要只记成“星号就是乘法”。
-
-通过 `*anime1`="afterglow" 修改的是目标字符串，并不改变指针中保存的地址。反过来，anime1=&band2 改变的是指针所指目标，不会自动改写 band1。用“指针盒子”和“目标对象”两个独立状态来追踪，比混称“改了指针”更准确。
-
-#### 完整课堂实验
-
-`L2_C02_D02.cpp` · [CPP-Classroom source](Examples/L2_C02_D02.cpp)
-
-```cpp
-#include <iostream>
-#include <string>
-
-int main() {
-    std::string band1 = "poppin party";
-    std::string band2 = "mygo";
-    std::string *anime1 = &band1;
-    *anime1 = "afterglow";
-    anime1 = &band2;
-    std::cout << band1 << ' ' << *anime1 << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-第一次写入把 band1 改为 afterglow；随后指针改指 band2。最终输出 afterglow mygo，band1 不会被后一次重定向改回去。
-
-#### 常见错误及原因
-
-指针变量本身也需要初始化。未初始化指针不等于 nullptr，更不能直接解引用。
-
-#### 自检
-
-p=&x 与 `*p`=x 的修改对象分别是谁？
-
-**参考解释：** 前者修改指针 p 保存的地址，后者修改 p 当前指向的对象。
-
-### 2.3 空指针、只读借用与有效期
-
-nullptr 表示没有指向对象，不能通过它访问某个字符串。原例在赋予有效地址后才解引用，修订版把这个前提明确写出来。需要允许空值的接口，应先检查指针；要求对象必定存在的接口，可以考虑引用，但引用也需要目标在使用期间始终存活。
-
-const string& 允许读取而不复制整个字符串，也不允许通过这个引用修改它。const `string*` 限制通过指针修改目标，但指针可以改指别处；`string* const` 则固定指针自身，目标仍可能可修改。先分清 const 修饰哪一层，再讨论接口是否只读。
-
-函数返回后，其普通局部对象会销毁。返回局部变量地址或引用会留下悬空访问入口。要返回计算结果或新建字符串，通常直接按值返回即可。不要为了“避免复制”而返回一个已经不存在的对象。
-
-#### 完整课堂实验
-
-`L2_C02_D03.cpp` · [CPP-Classroom source](Examples/L2_C02_D03.cpp)
-
-```cpp
-#include <iostream>
-#include <string>
-
-int main() {
-    std::string band = "mygo";
-    const std::string *p = nullptr;
-    if (p != nullptr) {
-        std::cout << *p << '\n';
-    }
-    p = &band;
-    std::cout << *p << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-第一次检查为空，所以不执行解引用；给 p 赋地址后输出 mygo。指针只借用 band，示例没有动态分配，也不应 delete 这个地址。
-
-#### 常见错误及原因
-
-“非空”只排除空值，不证明目标仍存活。悬空指针也可能保存非零地址。
-
-#### 自检
-
-返回局部 string 的 const 引用，会因为 const 而延长其生命周期吗？
-
-**参考解释：** 不会。const 不会挽救已在函数结束时销毁的局部对象。
-
-### 本章配套例题
-
-| ID | 题目 |
-| --- | --- |
-| S59 | [指针读写](../Exercises/基础语法/S59_zh.md) |
-| S60 | [空指针保护](../Exercises/基础语法/S60_zh.md) |
-| S61 | [指向 const 的指针](../Exercises/基础语法/S61_zh.md) |
-| S62 | [const 引用遍历](../Exercises/基础语法/S62_zh.md) |
-| S63 | [按值返回避免悬空](../Exercises/基础语法/S63_zh.md) |
-| S64 | [非拥有指针区间](../Exercises/基础语法/S64_zh.md) |
-
-## 03 用交换实验理解参数传递
-
-**原稿定位:** swap1；swap2；引用版本作为对照补充
-
-### 3.1 swap1 为什么没有交换调用者
-
-原 swap1(int a,int b) 在函数内部使用 temp 完成三次赋值。算法本身确实交换了 a 与 b，但这两个形参是调用时从实参复制来的整数对象。调用者 x、y 与函数内部 a、b 是不同对象，因此内部交换没有修改外部变量。
-
-必须沿着一次调用画出四个变量：外部 x=10、y=20，进入函数后 a=10、b=20。temp 保存 10，a 变成 20，b 变成 10；函数返回时 a、b、temp 结束生命周期，外部仍是 10 与 20。只在函数里打印参数会误以为交换任务已经完成。
-
-这不是编译器缺陷，也不是 temp 的写法错误，而是接口选择的结果。按值传递适合只需要输入副本的计算；若函数必须修改调用者，接口要显式借用原对象，使用引用或指向原对象的指针。
-
-#### 完整课堂实验
-
-`L2_C03_D01.cpp` · [CPP-Classroom source](Examples/L2_C03_D01.cpp)
-
-```cpp
-#include <iostream>
-
-void swap1(int a, int b) {
-    int temp = a;
-    a = b;
-    b = temp;
-}
-
-int main() {
-    int x = 10, y = 20;
-    swap1(x, y);
-    std::cout << x << ' ' << y << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-输出 10 20。函数内部最终 a=20、b=10，不影响这个结果。
-
-| Step | State / operation | Result |
-| --- | --- | --- |
-| `call` | `x=10,y=20` | `a=10,b=20` |
-| `temp=a` | `x=10,y=20` | `temp=10` |
-| `a=b` | `x=10,y=20` | `a=20` |
-| `b=temp` | `x=10,y=20` | `b=10` |
-| `return` | `x=10,y=20` | `parameters destroyed` |
-
-#### 常见错误及原因
-
-不要把“函数体里值变了”当成“实参已经变了”。两处输出应分别验证。
-
-#### 自检
-
-如果把 swap1 的返回类型改成 int，但仍不把结果赋回 x、y，会自动交换吗？
-
-**参考解释：** 不会。返回类型不会改变形参的按值语义。
-
-### 3.2 swap2 通过地址修改原对象
-
-原 swap2 接收 `int*` p1、`int*` p2，调用时传 &x、&y。形参指针本身仍按值复制，但复制的是地址。函数内的 p1 与调用者传入的地址值关联同一个 x，所以 `*p1` 的写入会落在 x 上。说“指针参数不是按值传递”并不准确。
-
-三步交换现在作用于目标：temp=`*p1` 保存原 x，`*p1`=`*p2` 把原 y 写入 x，`*p2`=temp 再写入 y。最后两个外部变量真实改变。前提是两个指针都指向有效、可写的 int；若接口允许空指针，必须先定义并实现空值行为。
-
-引用版本 swap_ref(int& a,int& b) 可以用直接变量语法修改原对象，调用时不用写取地址。两者的选择取决于是否允许“无对象”、是否需要重定向指针以及接口约定。用哪种写法都要能说明被修改的到底是哪一个对象。
-
-#### 完整课堂实验
-
-`L2_C03_D02.cpp` · [CPP-Classroom source](Examples/L2_C03_D02.cpp)
-
-```cpp
-#include <iostream>
-
-void swap2(int *p1, int *p2) {
-    int temp = *p1;
-    *p1 = *p2;
-    *p2 = temp;
-}
-void swap_ref(int &a, int &b) {
-    int temp = a;
-    a = b;
-    b = temp;
-}
-
-int main() {
-    int x = 10, y = 20;
-    swap2(&x, &y);
-    std::cout << x << ' ' << y << '\n';
-    swap_ref(x, y);
-    std::cout << x << ' ' << y << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-swap2 后输出 20 10；引用版本再交换一次，输出 10 20。两次调用都修改同一组外部对象。
-
-| Step | State / operation | Result |
-| --- | --- | --- |
-| `call` | `p1=&x,p2=&y` | `x=10,y=20` |
-| `temp=*p1` | `temp=10` | `x=10,y=20` |
-| `*p1=*p2` | `write x` | `x=20,y=20` |
-| `*p2=temp` | `write y` | `x=20,y=10` |
-
-#### 常见错误及原因
-
-不要交换 p1、p2 本身来代替交换 `*p1`、`*p2`。只交换局部地址副本不会交换 x、y。
-
-#### 自检
-
-swap2(&x,&x) 会破坏 x 吗？
-
-**参考解释：** 此处三步算法不会；两个地址相同，最终仍写回原值。仍需要 x 本身有效。
-
-### 本章配套例题
-
-| ID | 题目 |
-| --- | --- |
-| S57 | [值传递不能交换实参](../Exercises/基础语法/S57_zh.md) |
-| S58 | [引用交换](../Exercises/基础语法/S58_zh.md) |
-
-## 04 从 struct 到 Band 类
-
-**原稿定位:** Band：保留乐队成员字段，不改为机器人主线
-
-### 4.1 数据记录为什么需要行为边界
-
-原 Band 把吉他、主唱、鼓、贝斯、键盘五个字段放进同一个类型。先把它视为第一课 struct 的自然延续：每一个 Band 对象代表一支乐队，每个字段代表该乐队的一项状态。同一种类型可以创建多支乐队，而不是让整个程序只剩一套全局成员名字。
-
-如果字段公开，任何外部代码都能随意写入，类型本身无法保证成员修改遵循规则。private 把直接访问限制在类内部，再由 public 成员函数决定允许怎样读取或修改。封装的重点是可执行的状态约束，而不是机械地给每个字段写同名 getter 和 setter。
-
-struct 和 class 都能有成员函数、构造函数和继承。语言层面主要区别是默认成员访问与默认继承权限：struct 默认为 public，class 默认为 private。原教程从 struct 改成 class 的动作便于教学，但不能据此说 struct 没有面向对象能力。
-
-#### 完整课堂实验
-
-`L2_C04_D01.cpp` · [CPP-Classroom source](Examples/L2_C04_D01.cpp)
-
-```cpp
-#include <iostream>
-#include <string>
-
-struct BandRecord {
-    std::string guitar, vocal, bass;
+class Counter {
+public:
+    void tick() { ++count_; }
+    int value() const { return count_; }
+private:
+    int count_ = 0;
 };
+```
+
+这段类型把“计数值”和“计数加一”放在一起。Counter a 创建一个对象，a.tick() 对 a 调用操作，a.value() 取得它的当前计数。这里 const 成员函数先读成“这个操作只读当前对象”，第 2.3 节会正式解释。类定义末尾和结构体一样，需要分号。
+
+#### O01 第一个类
+
+源文件：O01.cpp
+
+**题面**
+
+定义 Robot 含公开 id 与 greet()，创建 id=7 对象并调用 greet 输出 Robot 7。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+Robot 7
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
 
 int main() {
-    BandRecord band = {"mutsumi", "hatsune", "umiri"};
-    std::cout << band.guitar << ':' << band.vocal << '\n';
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+#### O02 两个对象的状态
 
-这个过渡示例仍允许外部直接读写字段。下一节把同样的状态放到 private 中，访问方式随之改变。
+源文件：O02.cpp
 
-#### 常见错误及原因
+**题面**
 
-“用了 class 关键字”不自动等于已经完成良好封装；全部字段公开时仍缺少修改边界。
+创建两个 Counter，只给第一个调用两次 tick，输出两个计数。
 
-#### 自检
+**输入说明**
 
-把 struct 改为 class 而不补 public，原来的外部字段访问为什么失败？
+输入约束见题面；无输入题直接运行。
 
-**参考解释：** 成员默认访问权限从 public 变成 private，调用者不再能直接访问。
+**输出说明**
 
-### 4.2 private、public 与成员函数调用
+严格按题目指定内容与顺序输出。
 
-读 Band 的类定义时，先找访问标签，再读每个成员属于哪一段。private 下的五个 string 是内部状态，public 下的构造函数和方法是外部可用接口。外部写 band.guitar 会被编译器拒绝；band.get_guitar() 则调用一个有权读取内部状态的成员函数。
+**样例输入**
 
-点前面的对象决定操作哪支乐队。a.set_keyboard_anon() 修改 a，b 不会跟着变。成员函数内部可以不写对象前缀就访问 guitar，因为调用已经确定了当前对象。稍后用 this 把这个隐含关联写得更明确。
+```text
 
-旧注释说构造函数“必须 public”，这是不准确的绝对表述。本课为了让 main 直接创建 Band，选择 public 构造函数；其他设计可用 private 构造配合工厂接口。讲义保留当前示例的设计意图，同时把适用范围说清。
+```
 
-#### 完整课堂实验
+**样例输出**
 
-`L2_C04_D02.cpp` · [CPP-Classroom source](Examples/L2_C04_D02.cpp)
+```text
+2 0
+```
+
+**初始代码**
 
 ```cpp
 #include <iostream>
-#include <string>
-#include <utility>
 
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
+int main() {
+    // TODO
+    return 0;
+}
+```
 
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
+### 访问权限建立接口边界
+
+public 部分向调用方开放，private 部分只允许类自身成员及被明确授予权限的代码访问。对外调用者不能直接改写私有字段，因此类型可以在成员函数里统一验证修改是否合法。把字段藏起来只是手段，目标是确保对象始终满足它承诺的规则。读取状态时通过 getter 访问，修改状态时通过有语义的操作。
+
+名字末尾的下划线只是本课示例用来识别成员的命名习惯，不是 private 的语法。访问权限由 public、private 等声明决定。struct 默认成员公开，class 默认成员私有，它们都能定义数据成员、成员函数和构造函数，不能把两者理解为完全不同的两套对象机制。
+
+#### O03 private 访问边界
+
+源文件：O03.cpp
+
+**题面**
+
+Motor 的 `speed_` 私有，set_speed 把请求夹到 [-3,3]，getter 返回速度。分别请求 9、-9 并输出。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+3
+-3
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O05 struct 与 class
+
+源文件：O05.cpp
+
+**题面**
+
+定义 struct Point 和 class Hidden，各自含 int x，Point 直接访问，Hidden 通过 getter 访问，都输出 3。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+3 3
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 失败操作也需要规定状态
+
+一个修改接口可能接受、限幅或拒绝请求。限幅会把输入调整到允许区间，再写入成员；拒绝则可能要求状态完全保持。先检查全部前提，再提交状态变化，可以避免一部分字段已经变了，另一部分才发现失败。返回 bool 时，调用方要理解它说明的是操作是否成功，而不是简单的某个成员数值。
+
+同一个类型的多个对象应该能独立遵守这些规则。检查方法是对一个实例调用操作，再查看另一个实例是否仍保留原状态。初学面向对象时，不需要先讨论复杂设计模式，把“实例各自有状态”和“公开接口保护规则”理解清楚已经足以完成本节练习。
+
+#### O04 拒绝无效修改
+
+源文件：O04.cpp
+
+**题面**
+
+Magazine 初值 5，reload(n) 仅接受 n&gt;=0 且总数≤10，成功返回 true，失败保持原状态。测试 +4 与 +2。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+1 0 9
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.2 构造与成员初始化
+
+一个对象刚出现时，就应该有明确而合法的状态。构造函数负责把这种保证建立起来。
+
+本节题号：O06、O07、O08、O09、O10
+
+### 构造函数参与对象创建
+
+构造函数名字与类名相同，没有返回类型。对象创建时，编译器根据给出的参数选择合适构造函数。无参数的创建需要可用的默认构造函数；一旦声明了其他构造函数，不能再想当然地假设编译器一定仍会提供无参数版本。构造函数应把输入转换为对象可接受的初始状态。
+
+Python __init__ 常被用于初始化实例，但它与 C++ 构造过程不能一一等同。C++ 的基类和成员对象要在构造函数体执行前完成初始化，类型、顺序和可用构造函数都会受到编译规则检查。先理解这个时间顺序，比只记住两种语言的函数名更重要。
+
+### 初始化列表先于函数体
+
+```cpp
+class Sensor {
+public:
+    explicit Sensor(int id) : id_(id) {}
+    int id() const { return id_; }
+private:
+    const int id_;
 };
+```
+
+冒号之后的 id_(id) 是成员初始化列表的一项。它用参数初始化 id_，然后才进入构造函数体。若先让成员默认初始化，再在函数体里赋值，语义就是“创建后再修改”。对于 const 成员，创建之后不能重新赋值，必须在初始化阶段给值。引用成员和没有默认构造函数的成员也需要类似地在创建时安排好。
+
+#### O06 成员初始化列表
+
+源文件：O06.cpp
+
+**题面**
+
+Battery 构造函数接收 capacity 和 initial，容量至少 1，电量夹到 [0,capacity]，构造 (10,20) 输出电量。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+10
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <algorithm>
 
 int main() {
-    Band a("mutsumi", "hatsune", "nyamu", "umiri", "saki");
-    Band b("hina", "aya", "maya", "chisato", "eve");
-    a.set_keyboard_anon();
-    a.print_info();
-    b.print_info();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+#### O07 const 数据成员
 
-a 的最后字段变为 anon，b 的最后字段仍是 eve。用两个对象一起观察，能明确类定义共享、实例状态独立的区别。
+源文件：O07.cpp
 
-| Step | State / operation | Result |
-| --- | --- | --- |
-| `construct a` | `a.keyboard` | `saki` |
-| `construct b` | `b.keyboard` | `eve` |
-| `a.set_keyboard_anon()` | `a.keyboard` | `anon` |
-| `observe b` | `b.keyboard` | `eve` |
+**题面**
 
-#### 常见错误及原因
+Sensor 具有 const int `id_`，构造时初始化为 7，getter 输出编号。
 
-直接访问私有成员的错误应作为单独的故障实验，不要把不能编译的语句留在正常示例里。
+**输入说明**
 
-#### 自检
+输入约束见题面；无输入题直接运行。
 
-get_guitar 能读取 private 字段，是否说明 private 没起作用？
+**输出说明**
 
-**参考解释：** 不是。private 限制外部直接访问，类自己的成员函数正是被允许管理这些字段的地方。
+严格按题目指定内容与顺序输出。
 
-### 本章配套例题
+**样例输入**
 
-| ID | 题目 |
-| --- | --- |
-| O01 | [第一个类](../Exercises/面向对象/O01_zh.md) |
-| O02 | [两个对象的状态](../Exercises/面向对象/O02_zh.md) |
-| O03 | [private 访问边界](../Exercises/面向对象/O03_zh.md) |
-| O04 | [拒绝无效修改](../Exercises/面向对象/O04_zh.md) |
-| O05 | [struct 与 class](../Exercises/面向对象/O05_zh.md) |
+```text
 
-## 05 Band 的构造与初始化
+```
 
-**原稿定位:** Band 构造函数；std::move；MofoBand 初始化列表铺垫
+**样例输出**
 
-### 5.1 构造参数怎样进入对象状态
+```text
+7
+```
 
-创建 Band 时需要五个字符串，分别对应 guitar、vocal、drum、bass、keyboard。构造函数与类同名，没有返回类型。它在对象建立过程中执行，负责让这个对象从一开始就有可使用的状态。普通成员方法是在对象已经存在之后才被调用，两者的时间点不同。
-
-原构造函数先默认构造五个 string 成员，再在函数体里逐个赋值。这对 string 可以工作，但不等于所有成员类型都能如此处理。const 成员、引用成员以及没有默认构造函数的成员，需要在初始化阶段给出合适的初始化信息。下一步才引出成员初始化列表。
-
-原代码用 std::move(gt) 等表达式允许把形参的资源转移给成员。std::move 本身是转换，不是一个“立即搬运所有字节”的函数；是否发生移动由后续操作和类型决定。入门时先把它理解为：这个局部形参之后不再需要原内容，可交给成员接管。
-
-#### 完整课堂实验
-
-`L2_C05_D01.cpp` · [CPP-Classroom source](Examples/L2_C05_D01.cpp)
+**初始代码**
 
 ```cpp
 #include <iostream>
-#include <string>
-#include <utility>
-
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
 
 int main() {
-    Band band("mutsumi", "hatsune", "nyamu", "umiri", "saki");
-    band.print_info();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 同一类型的不同创建方式
 
-五个实参先初始化形参，再被赋给对应成员。打印顺序由 print_info 的实现决定，而不是由变量声明的排列自动产生。
+委托构造让一个构造函数选择同类另一个构造函数完成基础初始化，以免默认值和合法性规则写出多个版本。例如默认构造可以把工作委托给接收参数的构造函数。委托之后才执行当前构造函数体，不能一边委托一边在同一个初始化列表里单独初始化其他成员。
 
-#### 常见错误及原因
+单参数构造可能参与从其他类型到本类型的隐式转换。explicit 限制这类隐式使用，使调用处明确表达“我要构造这个类型”。它不妨碍普通的显式直接构造。读取接口若接受 const Distance&amp;，调用者可以先明确创建 Distance，再传入引用。
 
-不要在构造函数名前写 void；那会变成一个与类同名但语法不合法的普通函数声明。
+```cpp
+Timer() : Timer(default_interval) {}
+explicit Distance(double meters);
+```
 
-#### 自检
+#### O08 委托构造函数
 
-创建 Band 时只给四个参数会怎样？
+源文件：O08.cpp
 
-**参考解释：** 当前接口没有匹配的四参数构造函数，编译失败。
+**题面**
 
-### 5.2 成员初始化列表与实际顺序
+Timer() 默认 100ms，Timer(int) 接受正值，非正值变为 1。创建默认对象和 Timer(0)，输出各间隔。
 
-把原构造改写为冒号后的初始化列表，可以直接构造成员。Band(...):guitar(move(gt)),... 的语法放在函数体大括号之前。本课程使用圆括号提供成员的初值，不是一个在运行中随意调用成员变量的函数。
+**输入说明**
 
-成员按类中声明的顺序初始化，不按初始化列表的书写顺序。若后一个成员依赖前一个成员，声明顺序就有实际含义。基类部分又先于派生类自己的成员建立，这为后面 MofoBand(...):Band(...) 铺好理解路径。
+输入约束见题面；无输入题直接运行。
 
-不要为了炫技一次引入委托构造、移动构造与整套特殊成员函数。这里首先解决“对象建立前必须准备什么”的具体问题。额外的对象复制、移动和资源约束在末尾拓展中解释，不替代原稿构造到继承的主线。
+**输出说明**
 
-#### 完整课堂实验
+严格按题目指定内容与顺序输出。
 
-`L2_C05_D02.cpp` · [CPP-Classroom source](Examples/L2_C05_D02.cpp)
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+100 1
+```
+
+**初始代码**
 
 ```cpp
 #include <iostream>
-#include <string>
-#include <utility>
-
-class BandInit {
-    std::string guitar;
-    std::string keyboard;
-
-  public:
-    BandInit(std::string gt, std::string key)
-        : guitar(std::move(gt)), keyboard(std::move(key)) {}
-    void print() const { std::cout << guitar << ':' << keyboard << '\n'; }
-};
+#include <algorithm>
 
 int main() {
-    BandInit band("mutsumi", "saki");
-    band.print();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+#### O09 explicit 防止隐式转换
 
-guitar 与 keyboard 在进入空函数体之前就已完成初始化。打印得到 mutsumi:saki。
+源文件：O09.cpp
 
-#### 常见错误及原因
+**题面**
 
-把初始化列表写到构造函数体里面是不合法的；冒号必须跟在参数列表之后、函数体之前。
+Distance 由米数构造，显式创建 Distance(3)，print_distance 接受 const Distance&amp; 并输出值。
 
-#### 自检
+**输入说明**
 
-初始化列表里把 keyboard 写在 guitar 前面，会改变实际成员建立顺序吗？
+输入约束见题面；无输入题直接运行。
 
-**参考解释：** 不会，仍由成员声明顺序决定，应尽量按声明顺序书写以免误导。
+**输出说明**
 
-### 本章配套例题
+严格按题目指定内容与顺序输出。
 
-| ID | 题目 |
-| --- | --- |
-| O06 | [成员初始化列表](../Exercises/面向对象/O06_zh.md) |
-| O07 | [const 数据成员](../Exercises/面向对象/O07_zh.md) |
-| O08 | [委托构造函数](../Exercises/面向对象/O08_zh.md) |
-| O09 | [explicit 防止隐式转换](../Exercises/面向对象/O09_zh.md) |
-| O10 | [无默认构造的成员](../Exercises/面向对象/O10_zh.md) |
+**样例输入**
 
-## 06 实例、方法与乐队集合
+```text
 
-**原稿定位:** class_band：创建实例、print_info/live、vector、getter/setter，保持原执行次序
+```
 
-### 6.1 读方法、写方法与 const
+**样例输出**
 
-原 class_band 先创建 ave_mujica，再调用 print_info 与 live，随后调用 get_guitar 与 set_keyboard_anon。读取与修改的区别由方法行为决定。print_info 只是观察状态，set_keyboard_anon 则改变对象，调用顺序直接决定下一次输出。
+```text
+3
+```
 
-本版把不修改状态的方法标为 const。写在成员函数参数列表后面的 const，承诺这次调用不通过当前对象修改普通成员，因此 const Band 也可以调用它。这个 const 不修饰返回值，也不是把整个类所有对象都冻结。
-
-原 get_guitar 是一个输出方法，并不返回 string。保持原接口时，调用它的目的是在屏幕显示吉他手；若工程代码需要继续处理姓名，可另设计返回值接口。不要把“方法名含 get”当成语言保证的返回行为。
-
-#### 完整课堂实验
-
-`L2_C06_D01.cpp` · [CPP-Classroom source](Examples/L2_C06_D01.cpp)
+**初始代码**
 
 ```cpp
 #include <iostream>
-#include <string>
-#include <utility>
-
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
 
 int main() {
-    Band ave_mujica("mutsumi", "hatsune", "nyamu", "umiri", "saki");
-    ave_mujica.print_info();
-    ave_mujica.live();
-    ave_mujica.get_guitar();
-    ave_mujica.set_keyboard_anon();
-    ave_mujica.print_info();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 成员对象必须先被构造
 
-第一次名单最后是 saki，随后输出 LIVE 和 mutsumi，修改键盘手后最后一行的末尾才变成 anon。
+如果 Robot 拥有一个 Motor 成员，且 Motor 只有需要编号的构造函数，那么 Robot 创建时必须通过初始化列表把这个编号交给 Motor。进入 Robot 构造函数体之前，该成员已经需要完成构造，不能到函数体里才尝试“补上创建”。
 
-#### 常见错误及原因
+成员初始化的实际顺序按成员在类中的声明顺序决定，不按初始化列表的书写顺序。良好习惯是把初始化列表也按声明顺序写，减少误读。第二课后面引入继承时，基类部分还会先于成员完成初始化，这条时间线会继续延伸。
 
-不能把 void get_guitar() 的调用结果赋给 string；它没有提供这样的返回值。
+#### O10 无默认构造的成员
 
-#### 自检
+源文件：O10.cpp
 
-把 ave_mujica 定义成 const，哪一个调用会被拒绝？
+**题面**
 
-**参考解释：** set_keyboard_anon，因为它会修改普通成员；只读 const 方法仍可调用。
+Robot 持有 Motor，Motor 只接受 id 构造，Robot 必须初始化它；构造 Robot(4) 输出电机 id。
 
-### 6.2 `vector<Band>`、emplace_back 与范围引用
+**输入说明**
 
-原 live_bands 是 `vector<Band>`，容器元素从整数换成了我们定义的对象。emplace_back 把构造所需的五个名字传进去，在容器中建立 Band。它不是把字符串拼成一个名单文本，而是保存多个带行为的对象。
+输入约束见题面；无输入题直接运行。
 
-原 for(Band& p:live_bands) 让 p 逐个引用容器中的对象，避免每轮复制整支乐队。若只是打印，本版可以使用 const Band&，既表达只读，也允许在 const 容器上工作。若确实要调用修改方法，就保留非 const 引用。
+**输出说明**
 
-使用 for(Band p:live_bands) 则每轮复制一个对象。在副本上 set_keyboard_anon 不会改变容器内的原乐队。这个现象与第一课 int value 的数组遍历、第二课 swap1 的按值形参是同一个值复制主题，而不是一个新的神秘规则。
+严格按题目指定内容与顺序输出。
 
-#### 完整课堂实验
+**样例输入**
 
-`L2_C06_D02.cpp` · [CPP-Classroom source](Examples/L2_C06_D02.cpp)
+```text
+
+```
+
+**样例输出**
+
+```text
+4
+```
+
+**初始代码**
 
 ```cpp
 #include <iostream>
-#include <string>
-#include <utility>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.3 对象的读取、修改与传递
+
+第一课已经区分副本、引用和指针。把这些机制放到类的接口里，就能看懂 const 方法、this、链式调用和对象容器。
+
+本节题号：O11、O12、O13、O14、O15、O16、O17、O19、O40
+
+### 只读对象与只读成员函数
+
+成员函数参数列表之后的 const 修饰这个成员函数对当前对象的访问方式。读取计数、编号或状态的接口通常应声明为 const，使 const 对象也能调用它。普通非 const 成员函数可以修改对象，不能通过一个 const 对象直接调用。const 方法主要保护对象自身状态，不意味着它完全没有外部副作用，也不保证它引用的所有外部对象都绝不会改变。
+
+第一课使用过 values.size() 和 input.str() 这样的成员调用，本课只是在已有使用经验上解释接口限制。设计 getter 时，既考虑返回的类型，也考虑函数是否应该是 const，让调用方无需为读取状态而获得修改权限。
+
+#### O11 const 成员函数
+
+源文件：O11.cpp
+
+**题面**
+
+Counter 提供 value() const，const Counter(8) 能读取计数，不能调用 tick。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+8
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### this 标识当前对象
+
+普通非静态成员函数中，this 是指向当前接收对象的指针。this-&gt;x 访问当前对象的成员，与 (*this).x 对应。参数也叫 x 时，this-&gt;x = x 可以把左侧成员与右侧参数明确区分。this 本身指针身份不能重新赋成另一个对象。const 成员函数里的 this 提供对 const 对象的访问。
+
+成员函数若返回当前对象的引用，就可以写 return *this。调用方拿到的仍是同一对象，所以还能继续调用另一个设置接口，形成链式调用。返回引用不会创建一个自动延寿的新对象，原对象必须在整段使用期间仍然有效。
+
+#### O12 this 与同名参数
+
+源文件：O12.cpp
+
+**题面**
+
+Pose 的 set_x(int x) 用 this-&gt;x=x 区分同名变量，设置 5 并输出。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+5
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O13 链式调用返回引用
+
+源文件：O13.cpp
+
+**题面**
+
+Config 的 set_speed 与 set_id 返回 Config&amp;，链式设置 3、7 后输出 id:speed。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+7:3
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 返回副本与返回借用
+
+返回容器值会给调用方一个独立的容器结果；返回 const 引用则提供对内部现有容器的只读访问。调用方修改副本不会影响原容器，但保存内部引用会受到原对象生命周期和某些容器操作的影响。不能把 getter 返回引用理解为“永远有效”，也不能为了避免一次可能的复制而忽略接口的使用边界。
+
+#### O14 引用访问与值访问
+
+源文件：O14.cpp
+
+**题面**
+
+Buffer 包装 vector，copy() 返回副本，view() 返回 const 引用。修改副本首项为 9，输出 view 首项和副本首项。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+1 9
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
 #include <vector>
 
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
-
 int main() {
-    std::vector<Band> live_bands;
-    live_bands.emplace_back("hina", "aya", "maya", "chisato", "eve");
-    live_bands.emplace_back("sayo", "yukina", "ako", "lisa", "rinko");
-    for (const Band &p : live_bands) {
-        p.print_info();
-    }
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 静态成员函数与对象复制
 
-容器含两个 Band，按插入顺序输出两行。每次迭代 p 关联当前元素，循环本身不会再制造一个可独立修改的乐队副本。
+static 成员函数属于类型，不依赖某个实例，因此没有 this，不能直接读取普通实例成员。它适合判断一个参数是否合法这类不需要对象状态的工具操作。通过 Limits::valid 调用时，:: 说明访问类型中的成员。
 
-#### 常见错误及原因
+若类没有自定义特殊复制行为，成员通常依照各自类型进行复制。一个类含 vector&lt;int&gt; 时，复制对象会复制这个容器的值，修改副本的整数元素不会影响原对象。若成员是普通指针，复制的则是地址值，这两种情况要分开。函数按值接收对象时创建参数副本，按引用接收时使用原对象。
 
-容器增长可能搬迁元素，不要长期保留插入前取得的元素地址。引用遍历期间也不要随意 push_back。
+#### O15 静态成员函数
 
-#### 自检
+源文件：O15.cpp
 
-把 const Band& 改成 Band，打印结果一定变化吗？
+**题面**
 
-**参考解释：** 只打印时可能看不出区别，但会发生复制；修改副本时差异才在状态上显现。
+Limits::valid 不依赖对象，只判断速度是否在 [-3,3]，分别检查 3、4。
 
-### 本章配套例题
+**输入说明**
 
-| ID | 题目 |
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+1 0
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O16 对象值复制
+
+源文件：O16.cpp
+
+**题面**
+
+Robot 内含 vector{1,2}，复制 a 到 b，修改 b 首项为 9，输出 a 与 b 首项。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+1 9
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O17 引用传参与复制传参
+
+源文件：O17.cpp
+
+**题面**
+
+Counter 从 0 开始，touch_copy 按值加一，touch_ref 按引用加一，调用二者后输出原计数。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+1
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 对象集合和类外定义
+
+vector&lt;Unit&gt; 保存的是 Unit 对象。emplace_back 把参数交给元素构造过程，在容器末尾创建元素。使用 const Unit&amp; 遍历可以读取对象而不按轮复制。容器增长时可能重新分配存储，使先前保存的元素指针或引用失效，因此不要把元素的地址当作永远固定。
+
+成员函数可以在类中声明，在类外用 类型名::成员名 给出定义。这样接口与实现更易分开阅读。O40 仍然要求整个程序保留在单一 .cpp 中；类外定义并不等同于必须拆成多个文件。
+
+#### O19 vector 保存对象
+
+源文件：O19.cpp
+
+**题面**
+
+Unit(id) 构造对象，把 2、7 两对象 emplace_back 到 vector，按 const 引用遍历输出 id。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+2
+7
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <vector>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O40 声明与类外定义
+
+源文件：O40.cpp
+
+**题面**
+
+把 Motor 声明与成员定义分开，但仍保留在同一个 .cpp 中。set 限幅到 [-3,3]，设置 8 后输出 3。多文件拆分仅作为讲师本地工程扩展。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+3
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.4 对象组合与协作
+
+许多功能可以通过多个小对象协作完成。组合把部件作为成员，让外层对象组织步骤而不是包办所有细节。
+
+本节题号：O21、O22、O23、O24、O25
+
+### 拥有成员对象
+
+Chassis 可以有左、右两个 Motor 成员，Robot 可以有 Battery 成员。这是一种“拥有部件”的关系，每个成员负责自己的状态与接口。外层对象构造时准备成员，运行时调用成员的公开操作。外层对象的生命周期也包含这些成员的构造和销毁。
+
+组合关系先从实际需求判断：底盘拥有电机，而底盘不是一种电机。这里不需要为了复用接口而使用继承。把部件的规则放到各自类型内部，再由组合对象协调，可以减少多个地方各自修改同一份状态的机会。
+
+#### O21 组合两个电机
+
+源文件：O21.cpp
+
+**题面**
+
+Chassis 包含左右两个 Motor，每个 set 接受速度，drive(2,3) 后输出左右速度。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+2 3
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 协调过程需要清楚的顺序
+
+一个动作可能要求先确认电量足够，再消耗电量，再改变位置。若校验失败，就不能只执行其中一部分修改。接口应说明动作是否完成，并保证外部能观察到的状态一致。成员对象也可以通过返回值报告操作结果，外层对象依此决定是否继续。
+
+#### O22 电池与动作组合
+
+源文件：O22.cpp
+
+**题面**
+
+Robot 持有电量 2 的 Battery，每次 step 消耗 1，仅足够时 x 加一，调用三次后输出 x 与剩余电量。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+2 0
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 配置是对象行为的输入
+
+把配置通过构造参数传入，能让不同对象在同一套实现下采用不同限制。若构造时复制配置，之后调用方修改自己的那份配置，不会自动改变已经创建对象的配置副本。这一点仍然来自第一课的值复制模型。若以后需要共享实时配置，则必须明确选择引用或其他共享机制，本题不引申到那种设计。
+
+#### O23 注入可替换配置
+
+源文件：O23.cpp
+
+**题面**
+
+Policy 含 max_speed，Controller 通过构造复制配置，对请求限幅。两个配置 2 和 5 对请求 4 各输出结果。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+2 4
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <algorithm>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 快照与内部集合
+
+快照把某个时刻的状态按值返回。调用方可以修改自己的快照，不会反过来修改原对象。它适合让外部观察状态，同时保留内部修改入口。快照和内部引用的语义不同：前者是独立记录，后者仍借用内部对象。
+
+类内部也可以维护 vector&lt;string&gt; 等集合，公开接口决定哪些消息被接收、如何汇报，以及读取是否改变状态。添加时统一过滤空串，输出时统一保持顺序，这些规则应由接口实现，而不依赖每个调用者都记得过滤。组合本身没有额外的神秘语法，它依靠成员对象、构造和普通成员调用完成协作。
+
+#### O24 只读状态快照
+
+源文件：O24.cpp
+
+**题面**
+
+Robot::snapshot 返回 State 值，拿到快照后修改其 x=99，原对象 x 仍为 3。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+3 99
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O25 诊断消息集合
+
+源文件：O25.cpp
+
+**题面**
+
+Diagnostics 保存非空消息，add 忽略空串，report 每行输出一条，依次添加 OK、空串、LOW。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+OK
+LOW
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <string>
+#include <vector>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.5 生命周期、复制与资源管理
+
+对象何时构造、何时结束，会决定它管理的数据或资源何时可用。析构把结束时需要的工作放进类型本身。
+
+本节题号：O18、O20、O37、O39
+
+### 构造与析构的时间线
+
+普通局部对象在执行到相应声明时构造，在离开所属作用域时析构。同一作用域内，已经成功构造的普通局部对象通常按完成构造的相反顺序销毁。析构函数名写成 ~类型名，没有返回值和参数。它适合在对象结束时完成清理。不要为仍在正常使用的局部对象手动调用析构函数，否则之后自动销毁时可能破坏生命周期规则。
+
+| 执行位置 | 对象状态 |
 | --- | --- |
-| O11 | [const 成员函数](../Exercises/面向对象/O11_zh.md) |
-| O12 | [this 与同名参数](../Exercises/面向对象/O12_zh.md) |
-| O13 | [链式调用返回引用](../Exercises/面向对象/O13_zh.md) |
-| O14 | [引用访问与值访问](../Exercises/面向对象/O14_zh.md) |
-| O15 | [静态成员函数](../Exercises/面向对象/O15_zh.md) |
-| O16 | [对象值复制](../Exercises/面向对象/O16_zh.md) |
-| O17 | [引用传参与复制传参](../Exercises/面向对象/O17_zh.md) |
-| O18 | [作用域销毁顺序](../Exercises/面向对象/O18_zh.md) |
-| O19 | [vector 保存对象](../Exercises/面向对象/O19_zh.md) |
-| O20 | [静态活对象计数](../Exercises/面向对象/O20_zh.md) |
+| 进入外层并创建 a | a 存活 |
+| 进入内层并创建 b | a、b 都存活 |
+| 离开内层 | b 析构，a 继续存活 |
+| 离开外层 | a 析构 |
 
-## 07 MofoBand：继承与基类构造
+#### O18 作用域销毁顺序
 
-**原稿定位:** MofoBand : public Band；print_mofo_info
+源文件：O18.cpp
 
-### 7.1 public 继承建立什么关系
+**题面**
 
-原 MofoBand 在 Band 的五个成员信息之外增加 vocal_actor。public Band 表达这个派生类型可以作为一种 Band 来使用，已有的 public 方法成为可调用接口。派生对象包含一个 Band 基类部分，不是把 Band 的源码简单粘贴了一遍。
+Tracer 构造输出 +名称，析构输出 -名称。外层 a，内层 b，随后结束 main，预测全部输出。
 
-Band 的 private 字段仍然由 Band 自己管理。MofoBand 可以调用 print_info 来显示基类状态，却不能直接写 guitar。继承不等于绕过封装，也不是让子类“自动获得任意私有访问权限”。需要的行为应通过基类提供的接口表达。
+**输入说明**
 
-选择继承前要确认关系。乐队的一种扩展类型可以使用这个教学模型；电机是机器人拥有的部件，通常适合成员组合，而不是 Robot 继承 Motor。组合与继承是不同的组织关系，后面的机器人题库以明确标签作为迁移练习。
+输入约束见题面；无输入题直接运行。
 
-#### 完整课堂实验
+**输出说明**
 
-`L2_C07_D01.cpp` · [CPP-Classroom source](Examples/L2_C07_D01.cpp)
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
++a
++b
+-b
+-a
+```
+
+**初始代码**
 
 ```cpp
 #include <iostream>
 #include <string>
 #include <utility>
 
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
-class MofoBand : public Band {
-  protected:
-    std::string vocal_actor;
-
-  public:
-    MofoBand(std::string gt, std::string vo, std::string dr, std::string ba,
-             std::string key, std::string actor)
-        : Band(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-               std::move(key)),
-          vocal_actor(std::move(actor)) {}
-    void print_mofo_info() const {
-        print_info();
-        std::cout << vocal_actor << '\n';
-    }
-};
-
 int main() {
-    MofoBand morfonica("toko", "mashiro", "tsukushi", "nanami", "rui", "amane");
-    morfonica.print_info();
-    morfonica.print_mofo_info();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 静态数据与复制构造
 
-第一条调用打印基类的五个字段；第二条先打印同样五个字段，再额外输出 amane。基类状态只存一份。
+静态数据成员由类型的各个实例共同访问，不是每个对象分别拥有一份。C++17 的 inline static 可以在类内给出定义和初值。活对象计数需要在每次对象成功构造时增加，在析构时减少。复制构造创建新对象，因此也需要增加计数。
 
-#### 常见错误及原因
+用一个已有对象初始化另一个新对象，涉及复制构造；把值赋给一个已经存在的对象，涉及赋值操作。两者不能混为一谈。默认复制一个普通计数成员不会自动维护全局活对象计数，所以 Tracker 需要在复制构造函数中明确完成这项责任。
 
-调用继承来的 public 方法与直接访问基类 private 字段不是一回事。
+```cpp
+Tracker(const Tracker& other);
+Tracker& operator=(const Tracker& other);
+~Tracker();
+```
 
-#### 自检
+上面依次是复制构造、复制赋值和析构的接口形式。复制构造没有返回类型；operator= 命名赋值操作，常返回当前对象的引用。这里只识别这些特殊成员的职责和语法，不展开一般运算符重载。
 
-MofoBand 的成员函数能否直接写 guitar="new"？
+#### O20 静态活对象计数
 
-**参考解释：** 不能，guitar 是 Band 的 private 成员，应通过 Band 允许的接口管理。
+源文件：O20.cpp
 
-### 7.2 为什么冒号后要调用 Band
+**题面**
 
-原 MofoBand 的构造函数接收六个字符串，前五个用于初始化基类，最后一个用于派生类新增成员。冒号后的 Band(...) 不是普通函数调用语句，而是指定怎样建立基类子对象。基类先完成构造，派生类才继续建立自己的成员并执行构造函数体。
+Tracker 的默认构造和复制构造使 live+1，析构 live-1，作用域外最终计数为 0。
 
-Band 只有需要五个参数的构造函数，没有可用的无参数版本。因此这个 MofoBand 不能把基类初始化留空，再指望在函数体里补做。旧注释说“所有子类都必须自己定义构造函数”过于绝对；准确说法是这个设计必须为不能默认构造的基类提供初始化参数。
+**输入说明**
 
-本版把 vocal_actor 也放入成员初始化列表，保持“先完整建立对象，再执行方法”的规则一致。初始化的实际次序是基类 Band、派生成员 vocal_actor、派生构造函数体，与方法在类定义里的排列位置无关。
+输入约束见题面；无输入题直接运行。
 
-#### 完整课堂实验
+**输出说明**
 
-`L2_C07_D02.cpp` · [CPP-Classroom source](Examples/L2_C07_D02.cpp)
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+2
+0
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 资源与生命周期绑定
+
+资源不仅指内存，也可以是文件句柄、锁或其他需要成对获取和释放的东西。RAII 的做法是由对象承担资源管理责任：创建时建立资源，结束时释放资源。调用者依照对象的生命周期使用资源，减少多个返回分支都要手动清理的负担。这里先理解责任和时机，异常路径将在第 2.8 节进一步说明。
+
+std::string、std::vector 等标准库类型已经管理自己的存储。当一个 Log 只含 vector&lt;string&gt;，且没有额外的手动资源责任时，通常可以依靠成员完成复制和析构，不必自己再编写一组特殊成员函数。这就是 Rule of Zero 在本课中的意义：选用能管理资源的成员，让默认行为正确组合。
+
+#### O37 Rule of Zero
+
+源文件：O37.cpp
+
+**题面**
+
+Log 包装 `vector<string>`，使用默认复制、析构，复制后只向 b 追加，输出 a 与 b 长度。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+1 2
+```
+
+**初始代码**
 
 ```cpp
 #include <iostream>
 #include <string>
+#include <vector>
 #include <utility>
-
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
-class MofoBand : public Band {
-  protected:
-    std::string vocal_actor;
-
-  public:
-    MofoBand(std::string gt, std::string vo, std::string dr, std::string ba,
-             std::string key, std::string actor)
-        : Band(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-               std::move(key)),
-          vocal_actor(std::move(actor)) {}
-    void print_mofo_info() const {
-        print_info();
-        std::cout << vocal_actor << '\n';
-    }
-};
+#include <cstddef>
 
 int main() {
-    MofoBand band("toko", "mashiro", "tsukushi", "nanami", "rui", "amane");
-    band.print_mofo_info();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 有些对象就不应该被复制
 
-先建立五字段 Band，再建立声优成员，随后才可以安全调用显示完整信息的方法。
+某个设备对象可能代表唯一的使用权，把它复制成两份会让管理责任变得不清楚。可以用 = delete 明确禁止复制构造与复制赋值，让非法复制在编译时被拒绝。= default 表示请求编译器提供相应默认行为。删除复制不等于自动获得移动能力，本题只要求理解可默认创建、可使用，但不可复制的接口。
 
-| Step | State / operation | Result |
+对初学者来说，重要的不是背下所有特殊成员函数，而是能判断这个类型复制后意味着什么。若成员的默认行为已经正确，就依靠成员；若资源责任要求唯一，就把限制明确写在类型接口里。普通指针自身不负责销毁它指向的对象，这也是下一节以后讨论所有权时必须保留的区别。
+
+```cpp
+Device() = default;
+Device(const Device&) = delete;
+Device& operator=(const Device&) = delete;
+```
+
+#### O39 不可复制的设备
+
+源文件：O39.cpp
+
+**题面**
+
+Device 删除复制构造与复制赋值，仍可默认构造和调用 id 输出 7。指出复制语句应编译失败。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+7
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.6 继承与基类部分
+
+组合已经说明“拥有一个部件”。继承用来描述一种更具体的类型与其基类之间的关系。
+
+本节题号：O26、O27、O28、O29、O30
+
+### 派生对象包含基类部分
+
+class Derived : public Base 声明公有继承。一个 Derived 对象包含 Base 部分，也可以增加自己的成员和操作。把 Derived 用在需要合适 Base 引用或指针的位置，表达的是它也具有基类接口。继承应与组合区分：拥有电池适合成员组合，一种更具体的传感器与统一传感器接口则可能适合继承。
+
+公有继承不会让基类的 private 成员变成派生类可以直接访问的字段。派生类使用基类公开的接口完成这些访问，或者在设计允许时通过 protected 成员实现受控扩展。不要为了省去 getter 就把所有状态改成 protected。
+
+#### O26 public 继承
+
+源文件：O26.cpp
+
+**题面**
+
+Robot 提供 id=7，Sentry 公有继承 Robot 并增加 patrol，输出 id 和 PATROL。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+7
+PATROL
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 先创建基类，再创建成员
+
+派生构造函数的初始化列表可以给基类构造函数传参。基类没有可用默认构造时，派生类必须选择合适的带参数构造。这里给基类传参属于基类部分的初始化，与第 2.2 节同一类型内的委托构造需要区分。完整对象的初始化顺序先处理基类，再按声明顺序处理成员，最后执行派生构造函数体。析构的对应顺序相反，派生析构函数体执行后，成员和基类部分继续完成销毁。
+
+#### O27 基类构造委托
+
+源文件：O27.cpp
+
+**题面**
+
+Robot 必须给定 id 构造，Sentry 接收 id 并初始化基类，构造 9 输出 9。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+9
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### public、protected 与 private
+
+| 成员访问 | 类外调用方 | 派生类成员函数 |
 | --- | --- | --- |
-| `1` | `Band base` | `five member strings` |
-| `2` | `MofoBand member` | `vocal_actor` |
-| `3` | `constructor body` | `complete derived object` |
+| public | 可以使用 | 可以使用 |
+| protected | 不可直接使用 | 可在符合规则的派生访问中使用 |
+| private | 不可直接使用 | 不能直接访问基类私有成员 |
 
-#### 常见错误及原因
+这里的表格针对最基本的访问场景。protected 允许派生实现访问基类的受保护状态，但它不是“所有继承相关对象都任意可访问”的许可。当前题目通过派生对象修改继承而来的 hp，再提供公开读取接口，就足以理解用途。
 
-在函数体里写 Band(...); 只会构造一个临时对象，不能初始化当前对象中早已需要建立的基类部分。
+#### O28 protected 的可见性
 
-#### 自检
+源文件：O28.cpp
 
-如果删掉 :Band(...)，编译器会尝试寻找什么？
+**题面**
 
-**参考解释：** 它需要默认初始化 Band；当前 Band 没有匹配的无参数构造函数，所以编译失败。
+Base 的 hp=10 为 protected，Derived::damage 减 3，通过 public getter 输出 7。
 
-### 本章配套例题
+**输入说明**
 
-| ID | 题目 |
-| --- | --- |
-| O26 | [public 继承](../Exercises/面向对象/O26_zh.md) |
-| O27 | [基类构造委托](../Exercises/面向对象/O27_zh.md) |
-| O29 | [构造与析构的层次](../Exercises/面向对象/O29_zh.md) |
-| O30 | [同名隐藏与限定调用](../Exercises/面向对象/O30_zh.md) |
+输入约束见题面；无输入题直接运行。
 
-## 08 protected、this 与第二层派生
+**输出说明**
 
-**原稿定位:** MofoBand_New；change_actor
+严格按题目指定内容与顺序输出。
 
-### 8.1 protected 的准确访问范围
+**样例输入**
 
-原 MofoBand 把 vocal_actor 放在 protected 下，MofoBand_New::change_actor 因而能访问它。这里必须修正原注释“当前类不能访问”：声明该成员的当前类当然能访问，符合 C++ 规则的派生类成员函数也能访问；普通外部代码不能直接访问。
+```text
 
-public、protected、private 是编译器检查的访问规则，不是内存加密机制。给字段加 protected 会让派生类依赖基类内部表示，因此工程里也应考虑是否能用更窄的 protected 方法或 public 接口保持约束。这里先忠实解释原稿的继承链。
+```
 
-两层继承都保留 public：MofoBand_New 是 MofoBand 的一种扩展，同时仍包含 Band 基类部分。创建它时仍需把五个成员名和声优参数向上传递。不能只添加 change_actor，就忘掉父类构造所需的数据。
+**样例输出**
 
-#### 完整课堂实验
+```text
+7
+```
 
-`L2_C08_D01.cpp` · [CPP-Classroom source](Examples/L2_C08_D01.cpp)
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+#### O29 构造与析构的层次
+
+源文件：O29.cpp
+
+**题面**
+
+Base 与 Derived 构造、析构分别输出 +B、+D、-D、-B，创建一个 Derived 验证次序。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
++B
++D
+-D
+-B
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 同名隐藏尚未构成动态多态
+
+派生类声明一个与基类同名的非虚函数时，直接通过派生对象查找这个名字，可能选到派生版本；使用对象.Base::name() 则明确请求基类版本。对于非虚函数，通过基类接口调用不会自动按实际派生类型重新选择实现。Python 的方法查找直觉不能原样套用，下一节将引入显式的 virtual 机制。
+
+#### O30 同名隐藏与限定调用
+
+源文件：O30.cpp
+
+**题面**
+
+Base::name 返回 BASE，Derived 定义同名非虚 name 返回 DERIVED，分别调用 d.name 与 d.Base::name。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+DERIVED BASE
+```
+
+**初始代码**
 
 ```cpp
 #include <iostream>
 #include <string>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.7 虚函数、多态与对象切片
+
+调用方有时只关心统一接口，实际行为则由具体对象决定。虚函数让这件事成为 C++ 类型接口的明确组成部分。
+
+本节题号：O31、O32、O33
+
+### 基类接口与实际对象
+
+基类把某个成员函数声明为 virtual，派生类提供匹配的覆盖实现。通过指向实际派生对象的基类引用或指针调用该虚函数时，程序按实际对象选择最终覆盖函数。override 请求编译器检查这里确实覆盖了某个基类虚函数，能帮助发现参数、const 等签名不匹配的问题。
+
+```cpp
+struct Base {
+    virtual int value() const;
+};
+struct Derived : Base {
+    int value() const override;
+};
+```
+
+Python 常见的运行时方法选择让这种“同一接口，不同行为”比较容易理解。C++ 仍要求我们区分是否为虚函数，以及当前保存的是完整派生对象还是一个基类值。virtual 不是装饰性关键词，它决定通过基类接口调用时是否发生这里讨论的动态派发。
+
+#### O31 virtual 动态派发
+
+源文件：O31.cpp
+
+**题面**
+
+Base::kind 虚函数返回 BASE，Derived override 返回 SENTRY，通过 const Base&amp; 调用输出 SENTRY。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+SENTRY
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 纯虚函数表达需要实现的接口
+
+在虚函数声明后写 = 0 可以声明纯虚函数。具有未实现纯虚接口的抽象类不能直接创建实例，但可以通过它的引用或指针接收具体对象。调用方依赖 read() 这样的统一约定，具体类型负责提供结果。这使调用代码可以只关心接口，不必在每次调用时手动判断具体类型。
+
+纯虚接口可以只有最小操作，不需要在第一份设计里穷举所有未来功能。当前题目关注 const 读取接口、具体派生实现与基类引用传参，按这条最短路径理解即可。保存动态对象和统一销毁的责任将在下一节补齐。
+
+#### O32 纯虚接口
+
+源文件：O32.cpp
+
+**题面**
+
+定义抽象 Sensor::read() const，FixedSensor 返回 42，print_sensor 接受 const Sensor&amp; 并输出 read。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+42
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 按值复制到基类会切掉派生部分
+
+Base value = derived 创建的是一个真正的 Base 对象，只用派生对象的基类部分初始化它。派生部分不会保存进这个较小的基类值里，这叫对象切片。之后即使通过虚函数调用，value 的实际类型也是 Base，不会凭空恢复已经丢失的派生部分。
+
+| 保存方式 | 实际保存的东西 | 后续虚调用 |
+| --- | --- | --- |
+| Base value = derived | 独立的 Base 对象 | 按这个 Base 对象派发 |
+| const Base&amp; ref = derived | 借用原来的完整派生对象 | 可派发到派生实现 |
+
+想保留多态行为时，通常使用合适的引用或指针访问现有对象，或使用能够拥有多态对象的智能指针。引用和普通指针不自动延长目标生命周期。只把签名改成引用，却让目标先结束生命，仍然是不正确的接口使用。
+
+#### O33 对象切片
+
+源文件：O33.cpp
+
+**题面**
+
+Base::kind 返回 BASE，Derived 返回 DERIVED。Derived d 复制到 Base value=d 后分别输出 value 与基类引用的 kind。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+BASE DERIVED
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <string>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+## 2.8 动态对象、所有权与异常清理
+
+普通指针能提供访问入口，析构能完成对象清理。本节把两者连接起来，明确动态对象由谁负责结束生命。
+
+本节题号：O36、O34、O35、O38
+
+### 作用域与动态存储期
+
+普通局部对象通常具有自动存储期，作用域退出时自动销毁。动态分配创建的对象则需要管理者在合适时机销毁。常见实现把自动局部存储与动态分配分别联系到栈和堆，但这只是理解实现的常见示意，不是标准对所有对象物理位置的绝对保证。决定清理责任的是对象与所有者的语义。
+
+new 可以创建动态对象并返回指针，delete 可以销毁匹配的对象并释放相应存储。原始指针变量离开作用域时不会自动替你 delete 目标。手动管理很容易在多个返回分支中漏掉释放，也可能重复释放。题库因此采用标准库的独占智能指针来表达这项责任，不要求你实现一套手写内存管理。
+
+### 独占所有权用类型表达
+
+std::unique_ptr&lt;T&gt; 来自 &lt;memory&gt;，拥有一个对象并在结束时负责删除它。std::make_unique&lt;T&gt;(args...) 创建对象并返回相应所有者。普通指针或引用可以借用目标，但借用者不能比所借对象活得更久，也不应擅自释放它。智能指针本身仍是一个正常的 C++ 对象，因此它能把资源责任接入前面已经学过的析构机制。
+
+unique_ptr 不可复制，因为复制会造成两份独占所有者。std::move 来自 &lt;utility&gt;，它本身只是把表达式转换成允许选择移动操作的形式；真正的所有权转移由 unique_ptr 的移动构造或移动赋值完成。对 unique_ptr 完成这种转移后，源指针为空，目标指针接管对象。不能把所有类型的移动后状态都概括成“一定为空”。
+
+```cpp
+std::unique_ptr<int> owner = std::make_unique<int>(value);
+std::unique_ptr<int> next = std::move(owner);
+```
+
+#### O36 独占所有权转移
+
+源文件：O36.cpp
+
+**题面**
+
+make_unique 创建值为 7 的整数，将 a 移动给 b，输出 a 是否为空与 `*b`。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+true 7
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
 #include <utility>
-
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
-class MofoBand : public Band {
-  protected:
-    std::string vocal_actor;
-
-  public:
-    MofoBand(std::string gt, std::string vo, std::string dr, std::string ba,
-             std::string key, std::string actor)
-        : Band(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-               std::move(key)),
-          vocal_actor(std::move(actor)) {}
-    void print_mofo_info() const {
-        print_info();
-        std::cout << vocal_actor << '\n';
-    }
-};
-class MofoBand_New : public MofoBand {
-  public:
-    MofoBand_New(std::string gt, std::string vo, std::string dr, std::string ba,
-                 std::string key, std::string actor)
-        : MofoBand(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-                   std::move(key), std::move(actor)) {}
-    void change_actor(const std::string &new_actor) {
-        this->vocal_actor = new_actor;
-    }
-};
+#include <memory>
 
 int main() {
-    MofoBand_New band("toko", "mashiro", "tsukushi", "nanami", "rui", "amane");
-    band.change_actor("ayane");
-    band.print_mofo_info();
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 通过基类管理派生对象
 
-构造时声优为 amane，change_actor 通过派生类方法把它改为 ayane，随后显示新值。
+当 unique_ptr&lt;Base&gt; 拥有一个 Derived 对象，结束时会通过基类类型删除。用于这种多态删除的基类需要合适的虚析构函数，才能按预期执行派生清理，再清理基类部分。一个常见接口是 virtual ~Base() = default。此时派生对象包含的资源责任可以由相应析构过程完成。
 
-#### 常见错误及原因
+析构顺序与第 2.6 节的对象层次保持一致：先执行派生析构函数体，再依次清理成员和基类。智能指针负责触发删除，但它并不会弥补一个缺少正确虚析构约定的多态基类。
 
-main 不能直接写 band.vocal_actor；应调用公开的 change_actor。
+#### O34 虚析构函数
 
-#### 自检
+源文件：O34.cpp
 
-MofoBand 自己的 print_mofo_info 能否读取 protected vocal_actor？
+**题面**
 
-**参考解释：** 可以，protected 不会禁止声明它的类访问自身成员。
+用 `unique_ptr<Base>` 拥有 Derived，派生析构输出 D、基类析构输出 B。
 
-### 8.2 this 指向当前对象，const& 借用参数
+**输入说明**
 
-在 change_actor 中，this 指向当前这一次调用所操作的 MofoBand_New 对象。this->vocal_actor 明确表示“这个对象的成员”，与直接写 vocal_actor 在这里效果相同。如果形参与成员同名，this 可以帮助区分，但使用不同的命名风格也能减少遮蔽。
+输入约束见题面；无输入题直接运行。
 
-const string& new_actor 借用调用方字符串作为只读输入，避免先按值复制一份参数。把它赋给 vocal_actor 时，成员取得自己的字符串值，而不是把一个短命参数引用永久保存下来。因此方法返回后，成员仍可以安全使用。
+**输出说明**
 
-this 不是 static 成员函数拥有的隐含参数，因为 static 方法不绑定某个具体对象。也不要把 this 与返回当前对象的 `*this` 混淆：一个是指针，一个是所指对象。链式调用等写法可以在拓展题里进一步体验。
+严格按题目指定内容与顺序输出。
 
-#### 完整课堂实验
+**样例输入**
 
-`L2_C08_D02.cpp` · [CPP-Classroom source](Examples/L2_C08_D02.cpp)
+```text
 
-```cpp
-#include <iostream>
-#include <string>
-#include <utility>
-
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
-class MofoBand : public Band {
-  protected:
-    std::string vocal_actor;
-
-  public:
-    MofoBand(std::string gt, std::string vo, std::string dr, std::string ba,
-             std::string key, std::string actor)
-        : Band(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-               std::move(key)),
-          vocal_actor(std::move(actor)) {}
-    void print_mofo_info() const {
-        print_info();
-        std::cout << vocal_actor << '\n';
-    }
-};
-class MofoBand_New : public MofoBand {
-  public:
-    MofoBand_New(std::string gt, std::string vo, std::string dr, std::string ba,
-                 std::string key, std::string actor)
-        : MofoBand(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-                   std::move(key), std::move(actor)) {}
-    void change_actor(const std::string &new_actor) {
-        this->vocal_actor = new_actor;
-    }
-};
-
-int main() {
-    MofoBand_New a("toko", "mashiro", "tsukushi", "nanami", "rui", "amane");
-    {
-        std::string replacement = "ayane";
-        a.change_actor(replacement);
-    }
-    a.print_mofo_info();
-    return 0;
-}
 ```
 
-#### 执行推导
+**样例输出**
 
-replacement 的生命周期结束后，a 的 vocal_actor 仍保存 ayane，因为成员接收了字符串值。
-
-#### 常见错误及原因
-
-如果把成员改成引用并绑定一个短期参数，生命周期要求会完全不同，不能照搬当前例子的安全结论。
-
-#### 自检
-
-调用 a.change_actor 后，另一个独立对象 b 的声优会改变吗？
-
-**参考解释：** 不会，this 只指向接收这次调用的 a。
-
-### 本章配套例题
-
-| ID | 题目 |
-| --- | --- |
-| O28 | [protected 的可见性](../Exercises/面向对象/O28_zh.md) |
-
-## 09 原课程整合与工程拓展
-
-**原稿定位:** class_band 整合之后才进入扩展；扩展不替换原主线
-
-### 9.1 把 class_band 作为一条状态轨迹阅读
-
-原 main 最后只开启 class_band，其余演示通过注释逐段切换。课堂版把每个实验做成独立单文件，以免学生忘记取消哪一行注释。整合程序仍保留原顺序：创建基础乐队、显示和演出、建立集合并遍历、读取和修改字段、创建派生乐队、通过第二层派生修改声优。
-
-阅读时同时记录“对象类型”“变量名”“当前字段值”“可调用接口”四列。类型决定拥有哪些接口，变量名标识哪个实例，状态随方法调用改变，访问权限决定哪些表达式能通过编译。这比把整段程序按行翻译成中文更接近实际调试方法。
-
-完成本节后，学员应能口头解释 test_add、live1、anime1、swap1、swap2、Band、MofoBand 和 MofoBand_New 的作用，并能修改参数后预判输出。若不能说明这些原稿例子的行为，不应靠继续堆砌虚函数或智能指针术语来掩盖基础理解问题。
-
-#### 完整课堂实验
-
-`L2_C09_D01.cpp` · [CPP-Classroom source](Examples/L2_C09_D01.cpp)
-
-```cpp
-#include <iostream>
-#include <string>
-#include <utility>
-
-class Band {
-  private:
-    std::string guitar, vocal, drum, bass, keyboard;
-
-  public:
-    Band(std::string gt, std::string vo, std::string dr, std::string ba,
-         std::string key) {
-        guitar = std::move(gt);
-        vocal = std::move(vo);
-        drum = std::move(dr);
-        bass = std::move(ba);
-        keyboard = std::move(key);
-    }
-    void print_info() const {
-        std::cout << guitar << ',' << vocal << ',' << drum << ',' << bass << ','
-                  << keyboard << '\n';
-    }
-    void live() const { std::cout << "LIVE\n"; }
-    void get_guitar() const { std::cout << guitar << '\n'; }
-    void set_keyboard_anon() { keyboard = "anon"; }
-};
-class MofoBand : public Band {
-  protected:
-    std::string vocal_actor;
-
-  public:
-    MofoBand(std::string gt, std::string vo, std::string dr, std::string ba,
-             std::string key, std::string actor)
-        : Band(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-               std::move(key)),
-          vocal_actor(std::move(actor)) {}
-    void print_mofo_info() const {
-        print_info();
-        std::cout << vocal_actor << '\n';
-    }
-};
-class MofoBand_New : public MofoBand {
-  public:
-    MofoBand_New(std::string gt, std::string vo, std::string dr, std::string ba,
-                 std::string key, std::string actor)
-        : MofoBand(std::move(gt), std::move(vo), std::move(dr), std::move(ba),
-                   std::move(key), std::move(actor)) {}
-    void change_actor(const std::string &new_actor) {
-        this->vocal_actor = new_actor;
-    }
-};
-
-int main() {
-    Band basic("mutsumi", "hatsune", "nyamu", "umiri", "saki");
-    basic.print_info();
-    basic.set_keyboard_anon();
-    basic.print_info();
-    MofoBand_New derived("toko", "mashiro", "tsukushi", "nanami", "rui", "amane");
-    derived.change_actor("ayane");
-    derived.print_mofo_info();
-    return 0;
-}
+```text
+D
+B
 ```
 
-#### 执行推导
-
-依次观察基础对象修改前后两行，再观察派生对象的五字段行和声优行。不同对象的状态不应相互串改。
-
-#### 常见错误及原因
-
-只看最终输出不足以定位中途哪个动作写错；应在关键状态转换后建立检查点。
-
-#### 自检
-
-为什么这里没有要求基类出现 virtual？
-
-**参考解释：** 原课程使用的是继承来的接口与新增方法，没有通过基类引用要求动态派发；继承和运行时多态需要区分。
-
-### 9.2 拓展：继承、隐藏与虚函数重写
-
-原稿到 protected 和 this 为止，没有系统展开 virtual。本节明确标为拓展：当调用方只知道基类接口，却需要派生对象选择具体行为时，才需要虚函数动态派发。相同名字本身不会自动形成运行时多态。
-
-基类函数声明 virtual，派生函数写 override，编译器就能核对重写签名；末尾 const 也必须匹配。通过基类引用或指针调用时，实际对象的动态类型决定虚函数实现。把派生对象复制成基类值会丢失派生部分，称为对象切片。
-
-若通过基类指针销毁派生对象，基类析构通常必须为 virtual。这个要求与原 Band 的按值对象不同，不能无背景地把所有类都改成虚类。先确认生命周期和调用路径，再选择类型设计。
-
-#### 完整课堂实验
-
-`L2_C09_D02.cpp` · [CPP-Classroom source](Examples/L2_C09_D02.cpp)
-
-```cpp
-#include <iostream>
-#include <string>
-
-struct Robot {
-    virtual ~Robot() = default;
-    virtual std::string kind() const { return "ROBOT"; }
-};
-struct Sentry : Robot {
-    std::string kind() const override { return "SENTRY"; }
-};
-
-int main() {
-    Sentry object;
-    const Robot &ref = object;
-    Robot sliced = object;
-    std::cout << ref.kind() << ' ' << sliced.kind() << '\n';
-    return 0;
-}
-```
-
-#### 执行推导
-
-引用保留动态类型，输出 SENTRY；基类值已经发生切片，输出 ROBOT。
-
-#### 常见错误及原因
-
-不要用 `vector<Base>` 保存希望保留动态行为的不同派生对象。
-
-#### 自检
-
-override 能否发现派生方法遗漏 const 的错误？
-
-**参考解释：** 可以，该签名不匹配会导致编译错误。
-
-### 9.3 拓展：值复制、移动与资源所有权
-
-原 Band 只含 string，默认复制会复制成员值，通常不需要手写析构、复制构造与赋值。含 vector 或 string 的普通数据对象优先依赖这些标准库成员管理资源，这称为 Rule of Zero。不要为了学习面向对象而先给每个类添加 new 和 delete。
-
-unique_ptr 表达独占所有权，不能复制，但可以移动。移动 unique_ptr 后源保证为空，目标接管资源；不能把这个明确保证推广为“所有移动后的对象都为空”。普通 string 或 vector 移动后仍有效，但不应依赖未由接口保证的具体值。
-
-RAII 把资源释放与对象生命周期绑定：正常离开作用域或异常展开时，已完成构造的自动对象会析构。挑战题中的深复制缓冲区和 clone 是额外的所有权练习，需要在理解原 Band 值语义之后再做，不作为对原课程顺序的替代。
-
-#### 完整课堂实验
-
-`L2_C09_D03.cpp` · [CPP-Classroom source](Examples/L2_C09_D03.cpp)
+**初始代码**
 
 ```cpp
 #include <iostream>
 #include <memory>
-#include <utility>
 
 int main() {
-    std::unique_ptr<int> first = std::make_unique<int>(7);
-    std::unique_ptr<int> second = std::move(first);
-    std::cout << std::boolalpha << (first == nullptr) << ' ' << *second << '\n';
+    // TODO
     return 0;
 }
 ```
 
-#### 执行推导
+### 多态对象的集合
 
-输出 true 7，只有 second 拥有该整数。作用域结束时资源自动释放，不需要裸 delete。
+vector&lt;unique_ptr&lt;Base&gt;&gt; 的每个元素都持有一个独占所有者，可以分别管理不同具体派生类型。容器保存的不是被切片的 Base 值，而是具有同一基类接口的对象入口和所有权。遍历时通过指针调用虚函数，得到各实际对象的实现。构造派生对象、转换到基类所有者、容器保存和虚调用，这些步骤都已经在前文分别准备好。
 
-#### 常见错误及原因
+向这个容器加入已有 unique_ptr 时，需要转移所有权，不能复制。遍历读取时也不要按值复制 unique_ptr，可以通过 const 引用访问元素，再使用 -&gt; 调用对象接口。容器和元素析构时，各所有者会依次清理自己的目标。
 
-移动后不能继续无条件解引用 first；它为空。
+#### O35 多态容器
 
-#### 自检
+源文件：O35.cpp
 
-Band 内部都是 string，是否为了“完整”就必须手写深复制函数？
+**题面**
 
-**参考解释：** 不需要，默认成员复制已经提供所需值语义；自行管理裸资源时才需要重新审视特殊成员函数。
+Shape::area 纯虚函数，Square 边长 3，Rectangle 边长 2、4。用 `vector<unique_ptr<Shape>>` 保存并输出总面积。
 
-### 本章配套例题
+**输入说明**
 
-| ID | 题目 |
-| --- | --- |
-| O21 | [组合两个电机](../Exercises/面向对象/O21_zh.md) |
-| O22 | [电池与动作组合](../Exercises/面向对象/O22_zh.md) |
-| O23 | [注入可替换配置](../Exercises/面向对象/O23_zh.md) |
-| O24 | [只读状态快照](../Exercises/面向对象/O24_zh.md) |
-| O25 | [诊断消息集合](../Exercises/面向对象/O25_zh.md) |
-| O31 | [virtual 动态派发](../Exercises/面向对象/O31_zh.md) |
-| O32 | [纯虚接口](../Exercises/面向对象/O32_zh.md) |
-| O33 | [对象切片](../Exercises/面向对象/O33_zh.md) |
-| O34 | [虚析构函数](../Exercises/面向对象/O34_zh.md) |
-| O35 | [多态容器](../Exercises/面向对象/O35_zh.md) |
-| O36 | [独占所有权转移](../Exercises/面向对象/O36_zh.md) |
-| O37 | [Rule of Zero](../Exercises/面向对象/O37_zh.md) |
-| O38 | [异常与析构清理](../Exercises/面向对象/O38_zh.md) |
-| O39 | [不可复制的设备](../Exercises/面向对象/O39_zh.md) |
-| O40 | [声明与类外定义](../Exercises/面向对象/O40_zh.md) |
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+17
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <memory>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 异常会改变控制流，析构仍承担清理
+
+throw 抛出异常对象，正常执行路径中断，程序寻找匹配的 catch。传播途中离开的作用域里，已经成功构造的自动对象会执行析构，这个过程常称为栈展开。因此 Guard 的生命周期管理在正常离开和异常离开两条路径上都能完成释放。若程序因无人处理的异常直接终止，不能依赖所有清理都如正常路径发生；当前题目提供外层 catch。
+
+```cpp
+try {
+    Guard guard;
+    throw std::runtime_error("failure");
+} catch (const std::runtime_error& error) {
+    // handle the failure
+}
+```
+
+runtime_error 需要 &lt;stdexcept&gt;。catch 使用 const 引用可避免不必要的异常对象复制，也保留相应类型信息。本课只需要把异常理解为另一条离开当前作用域的控制路径，不扩展复杂异常体系。资源放进正确的管理对象，才让这条路径也能可靠遵守获取与释放约定。
+
+#### O38 异常与析构清理
+
+源文件：O38.cpp
+
+**题面**
+
+Guard 构造输出 ACQUIRE，析构输出 RELEASE。在作用域内抛 runtime_error，外层捕获输出 CAUGHT。
+
+**输入说明**
+
+输入约束见题面；无输入题直接运行。
+
+**输出说明**
+
+严格按题目指定内容与顺序输出。
+
+**样例输入**
+
+```text
+
+```
+
+**样例输出**
+
+```text
+ACQUIRE
+RELEASE
+CAUGHT
+```
+
+**初始代码**
+
+```cpp
+#include <iostream>
+#include <stdexcept>
+
+int main() {
+    // TODO
+    return 0;
+}
+```
+
+### 两节课连成一套模型
+
+第一课学习类型如何解释值、函数如何传递值，以及引用和指针怎样访问对象。第二课为对象补上创建、接口、结束和资源责任。读到一段 C++ 代码时，可以依次问：这里是什么类型，是否创建副本，正在借用谁，对象还是否存活，最后由谁负责清理。把这些问题与语法位置对应起来，比孤立背关键词更容易迁移到实际工程。
+
+## 概念资料
+
+- [Python 官方文档：Execution model](https://docs.python.org/3/reference/executionmodel.html)
+- [Python 官方文档：Glossary](https://docs.python.org/3/glossary.html)
+- [GCC 官方文档：Overall Options](https://gcc.gnu.org/onlinedocs/gcc/Overall-Options.html)
+- [C++ 工作草案：Input/output library](https://eel.is/c++draft/input.output)
+- [C++ 工作草案：String-based streams](https://eel.is/c++draft/string.streams)
+- [C++ 工作草案：References](https://eel.is/c++draft/dcl.ref)
+- [C++ 工作草案：Object lifetime](https://eel.is/c++draft/basic.life)
+- [C++ Core Guidelines：Resource management](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-resource)

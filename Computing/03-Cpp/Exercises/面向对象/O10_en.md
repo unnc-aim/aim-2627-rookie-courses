@@ -1,6 +1,6 @@
 # O10 A non-default-constructible member
 
-Lesson 2 · Chapter 05 · Constructing and initializing Band
+Lesson 2 · Section 2.2
 
 ## Problem
 
