@@ -1,6 +1,6 @@
 # S63 Return by value to avoid dangling
 
-Lesson 2 · Chapter 02 · References, addresses, and pointers
+Lesson 1 · Section 1.10
 
 ## Problem
 

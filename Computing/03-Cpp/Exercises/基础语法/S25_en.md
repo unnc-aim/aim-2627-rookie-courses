@@ -1,6 +1,6 @@
 # S25 Accumulate in a loop
 
-Lesson 1 · Chapter 05 · Conditions and for loops
+Lesson 1 · Section 1.4
 
 ## Problem
 

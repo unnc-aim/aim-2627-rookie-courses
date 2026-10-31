@@ -1,6 +1,6 @@
 # O19 vector 保存对象
 
-Lesson 2 · Chapter 06 · 实例、方法与乐队集合
+第 2 课 · 2.3 · 怎样使用和传递对象：const、this、复制与引用
 
 ## 题目
 

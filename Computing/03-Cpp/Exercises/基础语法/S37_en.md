@@ -1,6 +1,6 @@
 # S37 Copy and modify a vector
 
-Lesson 1 · Chapter 06 · Arrays, std::array, and range iteration
+Lesson 1 · Section 1.5
 
 ## Problem Copy(1,2,3) from a to b, set b[0]=9, and print a[0] and b[0].
 

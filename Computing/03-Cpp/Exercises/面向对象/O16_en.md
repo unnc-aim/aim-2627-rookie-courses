@@ -1,6 +1,6 @@
 # O16 Copy an object by value
 
-Lesson 2 · Chapter 06 · Instances, methods, and a collection of bands
+Lesson 2 · Section 2.3
 
 ## Problem
 

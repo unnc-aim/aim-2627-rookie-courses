@@ -1,6 +1,6 @@
 # S03 Read two integers
 
-Lesson 1 · Chapter 03 · Input, variables, and output formatting
+Lesson 1 · Section 1.2
 
 ## Problem
 

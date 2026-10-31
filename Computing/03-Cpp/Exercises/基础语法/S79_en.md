@@ -1,6 +1,6 @@
 # S79 Debug a loop endpoint
 
-Lesson 1 · Chapter 08 · Lesson 1 integration and a preview of structures
+Lesson 1 · Section 1.4
 
 ## Problem
 

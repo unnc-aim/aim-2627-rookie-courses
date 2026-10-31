@@ -1,6 +1,6 @@
 # O09 explicit 防止隐式转换
 
-Lesson 2 · Chapter 05 · Band 的构造与初始化
+第 2 课 · 2.2 · 构造对象时，就把它准备好
 
 ## 题目
 

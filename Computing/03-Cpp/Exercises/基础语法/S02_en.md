@@ -1,6 +1,6 @@
 # S02 Output with multiple fields
 
-Lesson 1 · Chapter 02 · Namespaces and first output
+Lesson 1 · Section 1.1
 
 ## Problem
 

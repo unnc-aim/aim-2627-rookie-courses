@@ -1,6 +1,6 @@
 # S44 Split comma-delimited fields
 
-Lesson 1 · Chapter 07 · Searching, replacing, inserting, and erasing strings
+Lesson 1 · Section 1.7
 
 ## Problem
 

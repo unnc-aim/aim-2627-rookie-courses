@@ -1,6 +1,6 @@
 # S50 Declaration and definition
 
-Lesson 2 · Chapter 01 · Functions: arguments, computation, and return
+Lesson 1 · Section 1.8
 
 ## Problem
 

@@ -1,6 +1,6 @@
 # O23 Inject a configuration
 
-Lesson 2 · Chapter 09 · Original-course integration and engineering extensions
+Lesson 2 · Section 2.4
 
 ## Problem
 

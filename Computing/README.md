@@ -35,8 +35,8 @@ graph TD
 
     F --> F1[Linux 系统基础]
 
-    G --> G1[Lesson-1: 基础语法]
-    G --> G2[Lesson-2: 函数与面向对象]
+    G --> G1[Lesson-1: 从 Python 上手 C++ 基础]
+    G --> G2[Lesson-2: 面向对象与资源管理]
 
     L --> L1[Cpp版本教程]
 

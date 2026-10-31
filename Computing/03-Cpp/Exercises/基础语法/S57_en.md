@@ -1,6 +1,6 @@
 # S57 Value parameters do not swap callers
 
-Lesson 2 · Chapter 03 · Understanding parameter passing through swapping
+Lesson 1 · Section 1.8
 
 ## Problem
 

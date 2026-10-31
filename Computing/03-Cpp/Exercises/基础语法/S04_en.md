@@ -1,6 +1,6 @@
 # S04 Read a name containing spaces
 
-Lesson 1 · Chapter 03 · Input, variables, and output formatting
+Lesson 1 · Section 1.6
 
 ## Problem
 

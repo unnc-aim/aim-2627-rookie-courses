@@ -1,6 +1,6 @@
 # O08 Delegating construction
 
-Lesson 2 · Chapter 05 · Constructing and initializing Band
+Lesson 2 · Section 2.2
 
 ## Problem
 

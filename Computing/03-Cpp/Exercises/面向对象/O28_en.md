@@ -1,6 +1,6 @@
 # O28 Protected access
 
-Lesson 2 · Chapter 08 · protected, this, and a second derived layer
+Lesson 2 · Section 2.6
 
 ## Problem
 

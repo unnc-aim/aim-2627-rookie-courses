@@ -1,6 +1,6 @@
 # S01 Hello and exit status
 
-Lesson 1 · Chapter 02 · Namespaces and first output
+Lesson 1 · Section 1.1
 
 ## Problem
 

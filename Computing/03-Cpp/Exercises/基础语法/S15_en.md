@@ -1,6 +1,6 @@
 # S15 Compare with an absolute tolerance
 
-Lesson 1 · Chapter 04 · Evaluating operators step by step
+Lesson 1 · Section 1.2
 
 ## Problem
 

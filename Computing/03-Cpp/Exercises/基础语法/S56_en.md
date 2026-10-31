@@ -1,6 +1,6 @@
 # S56 Boolean success and an output parameter
 
-Lesson 2 · Chapter 01 · Functions: arguments, computation, and return
+Lesson 1 · Section 1.9
 
 ## Problem
 
