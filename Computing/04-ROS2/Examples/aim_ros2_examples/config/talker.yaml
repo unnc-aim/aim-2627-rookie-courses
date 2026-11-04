@@ -1,0 +1,5 @@
+# 顶层键是节点名，ros__parameters 下面是该节点的参数
+talker:
+  ros__parameters:
+    prefix: "Hello from launch"
+    period_ms: 200
