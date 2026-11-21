@@ -109,9 +109,10 @@ if (idx != names.size())
 这段代码能正常跑，逻辑也没写错。但你试着设想一下，后面再继续往里加功能会发生什么：
 
 - **三个数组对齐全靠人肉维护。** 新增宠物要连续 `push_back` 三次，删宠物要同时删三个数组里的同一位。只要哪次漏了一行，或者顺序差了一位，`wangcai` 就莫名其妙变成一只兔子，而且程序不会崩溃，排查起来非常头疼。
-- **加一个字段，到处跟着改。** 明天产品说要记录宠物的体重 `weight`，`print_all` 得加参数，所有调用它的地方也得跟着改。属性一多，函数参数列表越拖越长。
-- **业务规则没地方放。** 假如要求"宠物名字不能为空"，你在 `rename` 里加了判断，但 `names` 就在外面裸着，别的函数或者新来的同事顺手写一句 `names[0] = "";`，规则直接失效。要想防住，只能在每个可能改名字的地方各写一遍检查。
-- **找回来的只是个下标。** `find_by_name` 没办法直接返回"那只叫 wangcai 的狗"，只能返回一个数字 `idx`，拿到之后还得自己去 `kinds[idx]`、`ages[idx]` 里把信息拼回来。
+
+- **加一个字段，到处跟着改。** 明天需求说要记录宠物的体重 `weight`，`print_all` 得加参数，所有调用它的地方也得跟着改。属性一多，函数参数列表越拖越长。
+
+- **数据的约定全靠记性。** 假如约定"宠物名字不能为空"，即使你在 `rename` 里加了判断，`names` 本质上还是个普通的 `vector<string>`。过两周再加个"从用户输入批量修改名字"的功能，顺手直接改了 names[i] 却忘了判空，编译器不会有任何提醒，脏数据就这么混进去了。
 
 ---
 
@@ -119,9 +120,17 @@ if (idx != names.size())
 
 既然问题在于"数据太散"，那解决办法就很直接了：干脆自己定义一种新类型 `Pet`，把属于同一只宠物的数据和常用操作打包在一起。
 
-完整代码见 [oop1.cpp](oop1.cpp)，核心部分长这样：
+按照 C++ 项目的常见组织方式，我们把这个版本拆成了三个文件：
+
+- [Pet.hpp](Pet.hpp)：头文件，放 `Pet` 类的**声明**（有哪些数据、提供哪些接口）；
+- [Pet.cpp](Pet.cpp)：源文件，放 `Pet` 成员函数的**具体实现**；
+- [main.cpp](main.cpp)：主程序，引入 `"Pet.hpp"` 后创建并使用 `Pet` 对象。
+
+先看 [Pet.hpp](Pet.hpp)：
 
 ```cpp
+#include <string>
+
 class Pet
 {
 private:
@@ -130,35 +139,57 @@ private:
     int age_;
 
 public:
-    Pet(const std::string &kind, const std::string &name, int age)
-        : kind_(kind), name_(name), age_(age)
-    {}
+    Pet(const std::string &kind, const std::string &name, int age);
 
-    const std::string &name() const { return name_; }
-    const std::string &kind() const { return kind_; }
-    int age() const { return age_; }
+    const std::string &name() const;
+    const std::string &kind() const;
+    int age() const;
 
-    void rename(const std::string &new_name)
-    {
-        if (new_name.empty())
-        {
-            std::cout << "!! empty name rejected\n";
-            return;
-        }
-        name_ = new_name;
-    }
+    // 唯一的改名入口，校验规则收口在这里
+    void rename(const std::string &new_name);
 
-    void print() const
-    {
-        std::cout << name_ << " is a " << kind_
-                  << ", age " << age_ << '\n';
-    }
+    void print() const;
 };
 ```
 
-有了 `Pet` 之后，外面的辅助函数和 `main` 一下子清爽了很多：
+再看 [Pet.cpp](Pet.cpp)，里面用 `Pet::` 指明这些函数属于 `Pet` 类，并给出具体实现：
 
 ```cpp
+#include "Pet.hpp"
+#include <iostream>
+
+Pet::Pet(const std::string &kind, const std::string &name, int age)
+    : kind_(kind), name_(name), age_(age) {}
+
+const std::string &Pet::name() const
+{
+    return name_;
+}
+
+void Pet::rename(const std::string &new_name)
+{
+    if (new_name.empty())
+    {
+        std::cout << "!! empty name rejected\n";
+        return;
+    }
+    name_ = new_name;
+}
+
+void Pet::print() const
+{
+    std::cout << name_ << " is a " << kind_
+              << ", age" << age_ << '\n';
+}
+```
+
+> 注：本例的 [main.cpp](main.cpp) 没有调用 `kind()` 和 `age()`，所以 [Pet.cpp](Pet.cpp) 里暂时只实现了实际用到的成员函数；如果后续要调用它们，照着 `Pet::name()` 的写法补上定义即可。
+
+有了 `Pet` 之后，[main.cpp](main.cpp) 里的辅助函数和 `main` 一下子清爽了很多：
+
+```cpp
+#include "Pet.hpp"
+
 void print_all(const std::vector<Pet> &pets)
 {
     for (const Pet &pet : pets)
@@ -181,6 +212,11 @@ std::size_t find_by_name(const std::vector<Pet> &pets, const std::string &target
 ```
 
 ```cpp
+Pet cat("cat", "xiaohui", 3);
+cat.print();
+
+std::cout << "----------------\n";
+
 std::vector<Pet> pets{
     Pet("cat", "xiaohui", 3),
     Pet("dog", "wangcai", 5),
@@ -191,6 +227,8 @@ print_all(pets);
 
 pets[0].rename("huihui");
 pets[0].rename(""); // 会被拦下来，名字保持不变
+std::cout << "---- after rename ----\n";
+print_all(pets);
 
 const std::size_t idx = find_by_name(pets, "wangcai");
 if (idx != pets.size())
@@ -198,6 +236,12 @@ if (idx != pets.size())
     std::cout << "found: ";
     pets[idx].print();
 }
+```
+
+因为拆成了多个源文件，编译时需要把 [main.cpp](main.cpp) 和 [Pet.cpp](Pet.cpp) 一起交给编译器：
+
+```bash
+g++ -std=c++17 -Wall -Wextra -o main main.cpp Pet.cpp && ./main
 ```
 
 回头对照刚才那几个痛点，看看发生了什么变化：
@@ -264,17 +308,20 @@ Pet cat("cat", "xiaohui", 3); // 对象（object）/ 实例（instance）：按�
 ### 3.3 构造函数与初始化列表
 
 ```cpp
-Pet(const std::string &kind, const std::string &name, int age)
-    : kind_(kind), name_(name), age_(age)
-{}
+// Pet.hpp 中声明
+Pet(const std::string &kind, const std::string &name, int age);
+
+// Pet.cpp 中实现
+Pet::Pet(const std::string &kind, const std::string &name, int age)
+    : kind_(kind), name_(name), age_(age) {}
 ```
 
 这个长得有点特别的函数叫**构造函数（constructor）**，用来保证对象一创建出来就有合理的初始值。它有几个特点：
 
 - **名字必须和类名完全一致，而且不能写返回类型**（连 `void` 都不能写）。
 - **对象创建时自动执行**，比如写下 `Pet cat("cat", "xiaohui", 3);` 的那一刻，它就会被调用。
-- **冒号后面的是初始化列表**。尽量用初始化列表给成员赋初值，而不是全塞在 `{}` 函数体里赋值。
-- **写了带参构造，编译器就不送默认构造了。** 如果你一个构造函数都不写，编译器会自动生成一个无参的默认构造函数；但只要你自己写了哪怕一个构造函数，编译器就不再代劳了。这时候再去写 `Pet p;` 就会报错。
+- **冒号后面的是初始化列表**。尽量用初始化列表给成员赋初值，而不是全塞在 `{}` 函数体里赋值；拆分成头文件和源文件时，初始化列表写在 `.cpp` 的实现处。
+- **写了带参构造，编译器就不送默认构造了。** 如果你一个构造函数都不写，编译器会自动生成一个无参的默认构造函数；但只要你自己写了带参的构造函数（哪怕只带一个没有默认值的参数），编译器就不再自动生成无参版本了——这时候再去写 `Pet p;` 就会报错。
 
 ### 3.4 成员函数与 `const`
 
@@ -288,11 +335,18 @@ cat.rename("huihui");
 你可能注意到了，`name()`、`print()` 这些函数的小括号后面多了一个 `const`：
 
 ```cpp
-const std::string &name() const { return name_; }
+// Pet.hpp 中声明
+const std::string &name() const;
 //                        ^^^^^ 表示这个函数承诺不会修改对象内部的数据
+
+// Pet.cpp 中实现（声明和实现处都必须写 const）
+const std::string &Pet::name() const
+{
+    return name_;
+}
 ```
 
-为什么要多写这个 `const`？看回 [oop1.cpp](oop1.cpp) 里的 `print_all`：
+为什么要多写这个 `const`？看回 [main.cpp](main.cpp) 里的 `print_all`：
 
 ```cpp
 void print_all(const std::vector<Pet> &pets)
@@ -304,9 +358,23 @@ void print_all(const std::vector<Pet> &pets)
 }
 ```
 
-C++ 的规矩很死：**`const` 对象（包括 `const` 引用）只能调用标了 `const` 的成员函数**。如果 `print()` 忘了加 `const`，上面那行 `pet.print()` 直接编译不过。所以养成习惯：只要一个成员函数只读数据、不改对象状态，随手在后面加上 `const`。
+C++ 的规矩很死：**`const` 对象（包括 `const` 引用）只能调用标了 `const` 的成员函数**。如果 `print()` 忘了加 `const`，上面那行 `pet.print()` 直接编译不过。而且当声明和实现拆开写时，`.hpp` 和 `.cpp` 两边都必须加上 `const`，少写一边编译器就会认为它们是不同的函数。所以养成习惯：只要一个成员函数只读数据、不改对象状态，随手在后面加上 `const`。
 
-### 3.5 内存里到底长什么样？
+### 3.5 声明与实现分离（`.hpp` 与 `.cpp`）
+
+第一次看到一个类被拆成 [Pet.hpp](Pet.hpp) 和 [Pet.cpp](Pet.cpp) 两个文件，可能会觉得有点绕，其实分工非常直观：
+
+- **头文件（`.hpp` / `.h`）放声明**：相当于"接口说明书"，告诉外界 `Pet` 有哪些成员、提供哪些函数，但只写函数签名、不写函数体。需要用到 `Pet` 的地方（比如 [main.cpp](main.cpp)）写一句 `#include "Pet.hpp"` 就行。
+- **源文件（`.cpp`）放实现**：先 `#include "Pet.hpp"`，再用**作用域解析运算符 `::`**（`Pet::name`、`Pet::rename`、`Pet::print`）指明这些函数归属于 `Pet` 类，并补齐具体的函数体。
+- **编译时要带上所有 `.cpp`**：头文件是被 `#include` 直接展开进源文件的，不需要出现在编译命令里；但 [main.cpp](main.cpp) 和 [Pet.cpp](Pet.cpp) 都是源文件，必须一起传给 `g++`：
+  ```bash
+  g++ -std=c++17 -Wall -Wextra -o main main.cpp Pet.cpp
+  ```
+  如果只编译 `main.cpp`，编译阶段能通过（因为 `Pet.hpp` 里有声明），但链接阶段会报错 `undefined reference`（找不到 `Pet.cpp` 里的函数实现）。
+
+> 小贴士：实际工程里通常还会在 `.hpp` 的最开头加上一句 `#pragma once`（头文件保护），防止同一个头文件被间接 `#include` 多次时引发类重复定义错误。下一篇的 `pet.hpp` 里就会见到它。
+
+### 3.6 内存里到底长什么样？
 
 写完两个对象后，很多人会有个直觉上的疑问：
 
@@ -340,21 +408,22 @@ cat.print();       // 我们写的
 Pet::print(&cat);  // 编译器大致会翻译成这样
 ```
 
-所以在 `print()` 里写的 `name_`，本质上就是 `this->name_`。现在先记住"数据按对象分份、函数大家共用、靠 `this` 对号入座"就够了，后面学运算符重载和继承的时候会反复用到这个直觉。
+所以在 `print()` 里写的 `name_`，本质上就是 `this->name_`。现在先记住"数据按对象分份、函数大家共用、靠 `this` 对号入座"就够了，下一篇引入堆内存、继承和多态后，我们还会继续把这套内存模型展开讲透。
 
-### 3.6 顺便一提：命名习惯
+### 3.7 顺便一提：命名习惯
 
-[oop1.cpp](oop1.cpp) 里用了一些 C++ 项目里很常见的命名风格，提前说一声——**这些都是习惯，不是语法要求**：
+[Pet.hpp](Pet.hpp)、[Pet.cpp](Pet.cpp) 和 [main.cpp](main.cpp) 里用了一些 C++ 项目里很常见的命名风格，提前说一声——**这些都是习惯，不是语法要求**：
 
 - 类名首字母大写：`Pet`、`Subject`
 - 变量和函数名小写：`cat`、`print()`、`rename()`
 - 成员变量末尾加下划线：`kind_`、`name_`（一眼就能区分它是成员变量还是函数参数，也不会撞名）
+- 类对应的头文件和源文件通常成对命名，比如 `Pet.hpp` / `Pet.cpp`（或全小写 `pet.hpp` / `pet.cpp`）
 
 ---
 
 ## 四、退后一步：什么是编程范式？
 
-看完了 [proc.cpp](proc.cpp) 和 [oop1.cpp](oop1.cpp) 两套写法，现在再回头看"编程范式"这个词，就好懂多了。
+看完了 [proc.cpp](proc.cpp) 和面向对象版本（[Pet.hpp](Pet.hpp) / [Pet.cpp](Pet.cpp) / [main.cpp](main.cpp)）两套写法，现在再回头看"编程范式"这个词，就好懂多了。
 
 **编程范式（programming paradigm）**说白了就是"组织代码的套路"。同一个问题，你可以按不同的视角去拆解：
 
@@ -376,7 +445,7 @@ Pet::print(&cat);  // 编译器大致会翻译成这样
 这里有两点值得记住：
 
 1. **面向过程和面向对象其实都属于命令式**，都在一步步改状态、下指令，区别只是命令按"流程步骤"组织，还是按"对象"组织。
-2. **C++ 不是纯面向对象语言，而是多范式语言。** 它同时支持面向过程、面向对象、泛型（模板/STL）和一定的函数式写法（lambda）。所以别走极端，觉得学了 OOP 以后所有函数都必须塞进 `class` 里——就像 [oop1.cpp](oop1.cpp) 里的 `print_all` 和 `find_by_name`，做成普通自由函数反而更干净。
+2. **C++ 不是纯面向对象语言，而是多范式语言。** 它同时支持面向过程、面向对象、泛型（模板/STL）和一定的函数式写法（lambda）。所以别走极端，觉得学了 OOP 以后所有函数都必须塞进 `class` 里——就像 [main.cpp](main.cpp) 里的 `print_all` 和 `find_by_name`，做成普通自由函数反而更干净。
 
 ---
 
@@ -431,12 +500,12 @@ int main()
 }
 ```
 
-完整参考实现见 [exercise/answer_subject.cpp](exercise/answer_subject.cpp)。
+完整参考实现见 [exercise/answer_subject.cpp](exercise/answer_subject.cpp)（练习为了方便写在了单个文件里，你也可以试着按 `Pet.hpp` / `Pet.cpp` 的方式拆分）。
 
 ---
 
 ## 六、阶段小结
 
-到这里，你已经用上了面向对象最基础的那一层：**把数据和规则装进自定义类型里**。
+到这里，你已经用上了面向对象最基础的那一层：**把数据和规则装进自定义类型里，并用 `.hpp` / `.cpp` 把接口声明与实现分开**。
 
-其实这一篇里已经偷偷摸到了 OOP 四个核心概念的边——用 `Pet` 提炼出我们关心的属性是**抽象**，用 `private` 和 `rename()` 守住数据规矩是**封装**。后面继续往下学，我们会遇到新的问题：如果猫和狗各有各的行为怎么办（**继承**）？如果希望 `pets[i].print()` 对不同动物自动表现出不同行为怎么办（**多态**）？这些都在下一篇 [tutorial2.md](../02_four_pillars/tutorial2.md) 里展开。
+其实这一篇里已经偷偷摸到了 OOP 四个核心概念的边——用 `Pet` 提炼出我们关心的属性是**抽象**，用 `private` 和 `rename()` 守住数据规矩是**封装**。后面继续往下学，我们会遇到新的问题：如果猫和狗各有各的行为怎么办（**继承**）？如果希望 `pets[i]->print()` 对不同动物自动表现出不同行为怎么办（**多态**）？对象销毁时怎么清理资源（**析构函数**），以及继承和多态在内存里到底是怎么落地的（**内存模型**）？这些都在下一篇 [tutorial2.md](../02_four_pillars/tutorial2.md) 里展开。

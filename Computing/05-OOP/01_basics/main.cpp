@@ -7,42 +7,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
-class Pet
-{
-private:
-    std::string kind_;
-    std::string name_;
-    int age_;
-
-public:
-    Pet(const std::string &kind, const std::string &name, int age)
-        : kind_(kind), name_(name), age_(age)
-    {
-    }
-
-    // 只读成员函数：末尾的 const 表示不会修改对象状态
-    const std::string &name() const { return name_; }
-    const std::string &kind() const { return kind_; }
-    int age() const { return age_; }
-
-    // 唯一的改名入口，校验规则收口在这里
-    void rename(const std::string &new_name)
-    {
-        if (new_name.empty())
-        {
-            std::cout << "!! empty name rejected\n";
-            return;
-        }
-        name_ = new_name;
-    }
-
-    void print() const
-    {
-        std::cout << name_ << " is a " << kind_
-                  << ", age " << age_ << '\n';
-    }
-};
+#include "Pet.hpp"
 
 void print_all(const std::vector<Pet> &pets)
 {
